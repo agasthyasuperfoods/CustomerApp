@@ -128,43 +128,54 @@
 
 import React from 'react';
 
-// --- Reusable Icon Components ---
+// --- Reusable Icon Components (No changes needed) ---
 const LeafIcon = (props) => (<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" {...props}><path d="M17 8C8 10 5.9 16.17 3.82 21.34l1.89.66C7.23 18.05 9 13 17 12V8z" /><path d="M17 2c-4.42 0-8 3.58-8 8 0 1.45.39 2.81 1.06 4H17v-2.94c.67-1.19 1.06-2.55 1.06-4 0-4.42-3.58-8-8-8z" /></svg>);
 const TruckIcon = (props) => (<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" {...props}><path d="M20 8h-3V4H3c-1.1 0-2 .9-2 2v11h2c0 1.66 1.34 3 3 3s3-1.34 3-3h6c0 1.66 1.34 3 3 3s3-1.34 3-3h2v-5l-3-4zM6 18c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm13.5-8.5l1.96 2.5H17V9.5h2.5zM18 18c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1z" /></svg>);
 const ShieldCheckIcon = (props) => (<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" {...props}><path d="M12 2L2 4v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V4l-10-2zm-2 15l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z" /></svg>);
 
-// Card for "Why Choose Us" section
+// --- Redesigned Feature Card ---
 const FeatureCard = ({ icon: Icon, title, children }) => (
-    <div className="bg-white rounded-2xl p-6 flex flex-col text-center items-center sm:flex-row sm:text-left sm:items-start space-y-4 sm:space-y-0 sm:space-x-5 shadow-sm border border-gray-100">
-        <div className="flex-shrink-0">
-            <div className="w-14 h-14 rounded-full bg-amber-100 flex items-center justify-center">
-                <Icon className="h-7 w-7 text-amber-600" />
+    <div className="relative bg-white rounded-2xl shadow-lg transition-all duration-300 ease-in-out hover:shadow-2xl hover:-translate-y-2">
+        <div className="absolute left-1/2 -translate-x-1/2 -top-10">
+            <div className="w-20 h-20 rounded-full bg-amber-400 flex items-center justify-center ring-8 ring-amber-50 shadow-md">
+                <Icon className="h-10 w-10 text-white" />
             </div>
         </div>
-        <div>
-            <h3 className="text-lg font-bold text-gray-900">{title}</h3>
-            <p className="mt-1 text-gray-600 leading-relaxed">{children}</p>
+        <div className="pt-16 pb-8 px-8 text-center">
+            <h3 className="text-xl font-bold text-gray-900">{title}</h3>
+            <p className="mt-3 text-gray-600 leading-relaxed">{children}</p>
         </div>
     </div>
 );
 
+// --- Redesigned Main Component ---
 export default function WhyChooseus() {
     return (
-        <section className="my-16 max-w-4xl mx-auto px-4">
-            <div className="text-center mb-10">
-                <h2 className="text-3xl font-extrabold text-gray-900">The Agasthya Promise</h2>
-                <p className="mt-2 text-gray-600">Quality and freshness you can trust, every single day.</p>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <FeatureCard icon={LeafIcon} title="Naturally Pure">
-                    Our free-range cows graze on natural pastures, producing milk that's rich in nutrients and free from additives.
-                </FeatureCard>
-                <FeatureCard icon={TruckIcon} title="Sunrise Delivery">
-                    We deliver your milk before 7 AM, ensuring you start your day with the freshest product possible.
-                </FeatureCard>
-                <FeatureCard icon={ShieldCheckIcon} title="Quality Assured">
-                    Every batch undergoes rigorous testing to guarantee it meets the highest standards of purity and safety.
-                </FeatureCard>
+        <section className="bg-amber-50/70 py-24 sm:py-32">
+            <div className="max-w-5xl mx-auto px-4">
+                {/* Section Header */}
+                <div className="text-center mb-20">
+                    <h2 className="text-4xl md:text-5xl font-extrabold text-gray-900 tracking-tight">
+                        The Agasthya Promise
+                    </h2>
+                    <p className="mt-4 max-w-2xl mx-auto text-lg text-gray-600">
+                        Quality and freshness you can trust, every single day.
+                    </p>
+                    <div className="mt-6 w-24 h-1.5 bg-amber-400 mx-auto rounded-full"></div>
+                </div>
+
+                {/* Features Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-x-8 gap-y-20">
+                    <FeatureCard icon={LeafIcon} title="Naturally Pure">
+                        {"Our free-range cows graze on natural pastures, producing milk that's rich in nutrients and free from additives."}
+                    </FeatureCard>
+                    <FeatureCard icon={TruckIcon} title="Sunrise Delivery">
+                        We deliver your milk before 7 AM, ensuring you start your day with the freshest product possible.
+                    </FeatureCard>
+                    <FeatureCard icon={ShieldCheckIcon} title="Quality Assured">
+                        Every batch undergoes rigorous testing to guarantee it meets the highest standards of purity and safety.
+                    </FeatureCard>
+                </div>
             </div>
         </section>
     );

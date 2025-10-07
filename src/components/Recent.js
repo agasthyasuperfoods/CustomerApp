@@ -2,6 +2,7 @@
 import React, { useEffect, useMemo } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import Image from 'next/image';
 
 /* ========= Site Palette ========= */
 const COLORS = {
@@ -63,23 +64,24 @@ export default function Recent() {
   );
 }
 
-/* ========= Product Card ========= */
+/* ========= Product Card (FIXED) ========= */
 function ProductCard({ p }) {
   const href = p?.slug ? `/product/${p.slug}` : '#';
   return (
     <Link
       href={href}
-      className="rounded-2xl overflow-hidden block"
+      className="group block overflow-hidden rounded-2xl"
       style={{ backgroundColor: COLORS.bg, boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}
     >
-      <div className="w-full aspect-square flex items-center justify-center"
+      <div className="relative w-full aspect-square"
            style={{ backgroundColor: COLORS.muted }}>
-        <img
+        <Image
           src={p.image}
           alt={p.name}
-          className="w-full h-full object-contain p-3"
-          loading="lazy"
-          decoding="async"
+          fill
+          sizes="(max-width: 640px) 50vw, 25vw"
+          style={{ objectFit: 'contain', padding: '0.75rem' }}
+          className="transition-transform duration-300 group-hover:scale-105"
         />
       </div>
       <div className="p-3">
