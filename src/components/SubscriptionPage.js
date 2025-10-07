@@ -446,7 +446,7 @@
 // }
 
 'use client';
-import React, { useMemo, useState, useEffect } from 'react';
+import React, { useMemo, useState, useEffect, useCallback } from 'react';
 import {
   ArrowLeftIcon,
   PauseCircleIcon,
@@ -473,9 +473,18 @@ const formatDate   = d => d ? d.toLocaleDateString('en-US', { month: 'short', da
 const PRICE_PER_LITER = 100;
 const SERVICE_AREAS = ['Kadapa', 'Jubilee Hills', 'Manikonda', 'Narsingi', 'OU Colony'];
 
+// --- Helper function to compare Sets ---
+const areSetsEqual = (set1, set2) => {
+    if (!set1 || !set2 || set1.size !== set2.size) return false;
+    for (const item of set1) {
+        if (!set2.has(item)) return false;
+    }
+    return true;
+};
+
 // --- New Subscription Component ---
 const NewSubscription = ({ onSubscribe }) => {
-    const [qty, setQty] = useState(1);
+    const [qty, setQty] = useState(0.5);
     const [address, setAddress] = useState('32-14 Agasthya Enclave');
     const [area, setArea] = useState('Kadapa');
     const [pattern, setPattern] = useState('EVERYDAY');
@@ -504,7 +513,7 @@ const NewSubscription = ({ onSubscribe }) => {
             }
             return;
         }
-        onSubscribe();
+        onSubscribe(pattern);
     };
 
     return (
@@ -521,7 +530,6 @@ const NewSubscription = ({ onSubscribe }) => {
             </div>
             
             <main className="mx-auto max-w-lg p-4 -mt-16 pb-28">
-                {/* --- Schedule Card --- */}
                 <div className="bg-white rounded-2xl shadow-md p-4 mb-6">
                     <h2 className="font-bold text-gray-900 mb-3 flex items-center gap-2">
                         <CalendarDaysIcon className="w-6 h-6 text-amber-500" />
@@ -544,8 +552,6 @@ const NewSubscription = ({ onSubscribe }) => {
                         ))}
                     </div>
                 </div>
-
-                {/* --- Delivery Details --- */}
                 <div className="bg-white rounded-2xl shadow-md p-4 space-y-5 mb-6">
                     <h2 className="font-bold text-gray-900 flex items-center gap-2">
                         <MapPinIcon className="w-6 h-6 text-amber-500" />
@@ -554,9 +560,9 @@ const NewSubscription = ({ onSubscribe }) => {
                     <div>
                         <label className="text-sm font-medium text-gray-700">Quantity per delivery</label>
                         <div className="flex items-center justify-between mt-2">
-                            <button onClick={() => setQty(Math.max(1, qty - 1))} className="p-3 rounded-lg bg-slate-100 hover:bg-slate-200"><MinusIcon className="w-5 h-5 text-gray-700" /></button>
-                            <div className="text-2xl font-extrabold text-gray-900">{qty} L</div>
-                            <button onClick={() => setQty(qty + 1)} className="p-3 rounded-lg bg-slate-100 hover:bg-slate-200"><PlusIcon className="w-5 h-5 text-gray-700" /></button>
+                            <button onClick={() => setQty(Math.max(0.5, qty - 0.5))} className="p-3 rounded-lg bg-slate-100 hover:bg-slate-200"><MinusIcon className="w-5 h-5 text-gray-700" /></button>
+                            <div className="text-2xl font-extrabold text-gray-900">{qty.toFixed(1)} L</div>
+                            <button onClick={() => setQty(qty + 0.5)} className="p-3 rounded-lg bg-slate-100 hover:bg-slate-200"><PlusIcon className="w-5 h-5 text-gray-700" /></button>
                         </div>
                     </div>
                     <div>
@@ -571,8 +577,6 @@ const NewSubscription = ({ onSubscribe }) => {
                          <input id="address" value={address} onChange={e => setAddress(e.target.value)} placeholder="e.g., Flat 101, Sunshine Apartments" className="mt-2 block w-full rounded-lg border-0 bg-slate-50 py-2.5 px-3 text-gray-900 ring-1 ring-inset ring-gray-200 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-amber-500 sm:text-sm" />
                     </div>
                 </div>
-
-                {/* --- Summary and Save Card --- */}
                 <div className="bg-white rounded-2xl shadow-md p-4">
                     <div className="flex items-center justify-between gap-4">
                       <div>
@@ -594,15 +598,16 @@ const NewSubscription = ({ onSubscribe }) => {
     );
 };
 
-// --- Manage Subscription Component (Existing UI) ---
-const ManageSubscription = () => {
+// --- Manage Subscription Component ---
+const ManageSubscription = ({ initialPattern }) => {
   const [monthDate, setMonthDate] = useState(startOfMonth(new Date()));
   const [selectedDates, setDates] = useState(new Set());
-  const [qty, setQty] = useState(1);
+  const [qty, setQty] = useState(0.5);
   const [address, setAddress] = useState('32-14 Agasthya Enclave');
   const [area, setArea] = useState('Kadapa');
   const [isPauseModalOpen, setPauseModalOpen] = useState(false);
   const [vacationPeriod, setVacationPeriod] = useState({ start: null, end: null });
+  const [pristineState, setPristineState] = useState(null);
 
   const isSubscriptionPaused = !!vacationPeriod.start;
 
@@ -613,7 +618,7 @@ const ManageSubscription = () => {
     setDates(next);
   };
 
-  const selectPreset = type => {
+  const selectPreset = useCallback((type) => {
     if (type === 'CLEAR') { setDates(new Set()); return; }
     const first = startOfMonth(monthDate);
     const last  = endOfMonth(monthDate);
@@ -625,8 +630,41 @@ const ManageSubscription = () => {
       if (type === 'WEEKENDS' && (dow === 0 || dow === 6)) next.add(toKey(d));
     }
     setDates(next);
-  };
-  
+  }, [monthDate]);
+
+  // FIXED: This useEffect no longer has missing dependencies.
+  useEffect(() => {
+    const first = startOfMonth(monthDate);
+    const last = endOfMonth(monthDate);
+    const initialDates = new Set();
+    if (initialPattern) {
+        for (let d = new Date(first); d <= last; d.setDate(d.getDate() + 1)) {
+            const dow = d.getDay();
+            if (initialPattern === 'EVERYDAY') initialDates.add(toKey(d));
+            if (initialPattern === 'WEEKDAYS' && dow >= 1 && dow <= 5) initialDates.add(toKey(d));
+            if (initialPattern === 'WEEKENDS' && (dow === 0 || dow === 6)) initialDates.add(toKey(d));
+        }
+    }
+    setDates(initialDates);
+
+    // Capture the complete initial state using the known default values
+    setPristineState({
+        dates: initialDates,
+        qty: 0.5, 
+        area: 'Kadapa',
+        address: '32-14 Agasthya Enclave',
+    });
+  }, [initialPattern, monthDate]);
+
+  const isDirty = useMemo(() => {
+    if (!pristineState) return false;
+    const hasDateChanged = !areSetsEqual(pristineState.dates, selectedDates);
+    const hasQtyChanged = pristineState.qty !== qty;
+    const hasAreaChanged = pristineState.area !== area;
+    const hasAddressChanged = pristineState.address !== address;
+    return hasDateChanged || hasQtyChanged || hasAreaChanged || hasAddressChanged;
+  }, [pristineState, selectedDates, qty, area, address]);
+
   const handlePauseAction = () => {
       if (isSubscriptionPaused) {
           setVacationPeriod({ start: null, end: null });
@@ -658,7 +696,7 @@ const ManageSubscription = () => {
 
   const selectedCount = activeSelectedDates.size;
   const estimatedBill = selectedCount * qty * PRICE_PER_LITER;
-  const canSave = area && (isSubscriptionPaused || selectedCount > 0);
+  const canSave = isDirty && area && (isSubscriptionPaused || selectedCount > 0);
 
   const handleSave = () => {
     let statusMessage = isSubscriptionPaused 
@@ -681,6 +719,13 @@ const ManageSubscription = () => {
       `,
       confirmButtonText: 'Great!',
       confirmButtonColor: '#FBBF24',
+    }).then(() => {
+        setPristineState({
+            dates: selectedDates,
+            qty: qty,
+            area: area,
+            address: address,
+        });
     });
   };
 
@@ -794,9 +839,9 @@ const ManageSubscription = () => {
               <div>
                   <label className="text-sm font-medium text-gray-700">Quantity per delivery</label>
                   <div className="flex items-center justify-between mt-2">
-                      <button onClick={() => setQty(Math.max(1, qty - 1))} className="p-3 rounded-lg bg-slate-100 hover:bg-slate-200"><MinusIcon className="w-5 h-5 text-gray-700" /></button>
-                      <div className="text-2xl font-extrabold text-gray-900">{qty} L</div>
-                      <button onClick={() => setQty(qty + 1)} className="p-3 rounded-lg bg-slate-100 hover:bg-slate-200"><PlusIcon className="w-5 h-5 text-gray-700" /></button>
+                      <button onClick={() => setQty(Math.max(0.5, qty - 0.5))} className="p-3 rounded-lg bg-slate-100 hover:bg-slate-200"><MinusIcon className="w-5 h-5 text-gray-700" /></button>
+                      <div className="text-2xl font-extrabold text-gray-900">{qty.toFixed(1)} L</div>
+                      <button onClick={() => setQty(qty + 0.5)} className="p-3 rounded-lg bg-slate-100 hover:bg-slate-200"><PlusIcon className="w-5 h-5 text-gray-700" /></button>
                   </div>
               </div>
               <div>
@@ -955,8 +1000,8 @@ const PauseSubscriptionModal = ({ isOpen, onClose, onConfirm }) => {
 
 // --- Main Page Component (Controller) ---
 export default function SubscriptionPage() {
-  // In a real app, this would be determined by user's auth state / database record
   const [isSubscribed, setIsSubscribed] = useState(false); 
+  const [initialPattern, setInitialPattern] = useState(null);
 
   useEffect(() => {
     const script = document.createElement('script');
@@ -968,7 +1013,7 @@ export default function SubscriptionPage() {
     };
   }, []);
 
-  const handleSubscribe = () => {
+  const handleSubscribe = (pattern) => {
     if (typeof Swal !== 'undefined') {
         Swal.fire({
           title: 'Welcome!',
@@ -977,16 +1022,17 @@ export default function SubscriptionPage() {
           confirmButtonText: 'Manage Subscription',
           confirmButtonColor: '#FBBF24',
         }).then(() => {
+            setInitialPattern(pattern);
             setIsSubscribed(true);
         });
     } else {
-        // Fallback for when Swal is not loaded
+        setInitialPattern(pattern);
         setIsSubscribed(true);
     }
   };
 
   if (isSubscribed) {
-    return <ManageSubscription />;
+    return <ManageSubscription initialPattern={initialPattern} />;
   }
 
   return <NewSubscription onSubscribe={handleSubscribe} />;
