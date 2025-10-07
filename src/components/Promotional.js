@@ -99,6 +99,7 @@
 
 'use client';
 import React from 'react';
+import Image from 'next/image'; // Import the Image component
 
 // --- (No changes needed for SVG Icons) ---
 const CowIcon = (props) => (
@@ -152,7 +153,14 @@ const TimelineStep = ({ step, index }) => {
       {/* --- Left Side Card --- */}
       <div className={`w-full md:w-1/2 ${isLeft ? 'md:pr-8' : 'md:pl-8 md:order-2'}`}>
         <div className="relative overflow-hidden rounded-2xl shadow-lg h-56 flex flex-col justify-end p-6 text-white transition-transform duration-300 ease-in-out hover:scale-105">
-          <img src={step.imageUrl} alt={step.title} className="absolute inset-0 w-full h-full object-cover" />
+          {/* FIXED: Replaced <img> with <Image> */}
+          <Image 
+            src={step.imageUrl} 
+            alt={step.title} 
+            layout="fill" 
+            objectFit="cover" 
+            className="absolute inset-0 w-full h-full" 
+          />
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent"></div>
           <div className="relative z-10">
             <h3 className="text-xl font-bold">{step.title}</h3>

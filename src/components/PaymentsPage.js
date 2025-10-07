@@ -2,7 +2,7 @@
 'use client';
 
 import React, { useState } from 'react';
-// Removed 'next/router' as it was causing an error. Using standard web navigation instead.
+import Link from 'next/link'; // Import Link
 import { ArrowLeftIcon, PlusIcon, EllipsisVerticalIcon, BanknotesIcon } from '@heroicons/react/24/outline';
 
 // --- SVG Icons for Payment Brands ---
@@ -61,10 +61,11 @@ export default function PaymentMethodsPage() {
       {/* --- Header --- */}
       <div className="bg-amber-400 h-28">
          <div className="mx-auto max-w-lg px-4 pt-6 flex items-start">
-          <a href="/account" className="p-2 -ml-2 text-gray-800 hover:bg-black/10 rounded-full">
+          {/* FIXED: Replaced <a> tag with <Link> */}
+          <Link href="/account" className="p-2 -ml-2 text-gray-800 hover:bg-black/10 rounded-full">
             <ArrowLeftIcon className="h-6 w-6" />
             <span className="sr-only">Back</span>
-          </a>
+          </Link>
           <h1 className="text-xl font-bold text-gray-900 ml-3 mt-1">
             Payment Methods
           </h1>

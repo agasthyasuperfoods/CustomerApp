@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import Link from 'next/link'; // Import Link
+import Image from 'next/image'; // Import Image
 
 // --- SVG Icon Components ---
 const HeartIcon = () => ( <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" ><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" /></svg>);
@@ -18,13 +20,16 @@ const Header = () => {
         {/* Top section: Logo and Icons */}
         <div className="flex items-center justify-between">
           
-          <a href="/">
-            <img 
+          {/* FIXED: Replaced <a> with <Link> and <img> with <Image> */}
+          <Link href="/">
+            <Image 
               src="/Logo.png" 
               alt="Agasthya Logo" 
+              width={120} // Added required width
+              height={48} // Added required height
               className="h-12 w-auto"
             />
-          </a>
+          </Link>
           
           <div className="flex items-center space-x-5">
             <button className="text-slate-600 hover:text-amber-500 transition-colors">
@@ -61,7 +66,3 @@ const Header = () => {
 };
 
 export default Header;
-
-
-
-

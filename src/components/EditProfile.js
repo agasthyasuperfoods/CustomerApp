@@ -2,7 +2,8 @@
 'use client';
 
 import React, { useState } from 'react';
-import { useRouter } from 'next/router'; // The navigation hook you requested
+import Image from 'next/image'; // Import the Image component
+import { useRouter } from 'next/router';
 import {
   ArrowLeftIcon, UserIcon, EnvelopeIcon, PhoneIcon,
   MapPinIcon, BuildingOffice2Icon, CameraIcon
@@ -98,10 +99,13 @@ export default function PremiumEditProfile() {
         {/* --- AVATAR OVERLAP --- */}
         <div className="flex flex-col items-center">
             <div className="relative">
-                <img
+                {/* FIXED: Replaced <img> with <Image> */}
+                <Image
                     src={form.avatar}
                     alt="Profile Avatar"
-                    className="h-28 w-28 rounded-full object-cover ring-4 ring-white shadow-lg"
+                    width={112} // The className h-28/w-28 is 112px
+                    height={112}
+                    className="rounded-full object-cover ring-4 ring-white shadow-lg"
                 />
                 <button className="absolute -bottom-1 -right-1 bg-white p-2 rounded-full text-gray-700 hover:bg-gray-200 shadow-md border">
                     <CameraIcon className="h-5 w-5" />

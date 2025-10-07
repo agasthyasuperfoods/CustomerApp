@@ -1,8 +1,7 @@
 'use client';
 
 import React from 'react';
-// import your existing product components here, if any
-// import ProductCard from '@/components/ProductCard'; // example
+import Image from 'next/image'; // Import the Image component
 
 // Keep this IN SYNC with Footer.js height (FOOTER_PX = 80)
 const FOOTER_PX = 80;
@@ -38,12 +37,13 @@ export default function ShopbyM() {
                 className="w-full aspect-square flex items-center justify-center"
                 style={{ backgroundColor: '#F3F4F6' }}
               >
-                <img
+                {/* FIXED: Replaced <img> with <Image> */}
+                <Image
                   src="/Milk.png"
                   alt="Milk"
+                  width={200} // Added required width
+                  height={200} // Added required height
                   className="w-full h-full object-contain p-3"
-                  loading="lazy"
-                  decoding="async"
                 />
               </div>
               <div className="p-3">
