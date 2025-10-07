@@ -21,7 +21,7 @@ const COLORS = {
   muted: '#F3F4F6',
 };
 
-function InitialsBadge({ name = 'Jane Doe' }) {
+function InitialsBadge({ name = 'Jaswanth' }) {
   const initials = name.split(' ').map(n => n[0]).slice(0, 2).join('').toUpperCase();
   return (
     <div
@@ -65,9 +65,9 @@ function Row({ href = '#', icon: Icon, label, badge }) {
 export default function AccountPage() {
   // local demo user (no API)
   const user = {
-    name: 'Jane Doe',
-    email: 'jane.doe@example.com',
-    city: 'Kadapa',
+    name: 'Jaswanth',
+    email: 'jaswanth@gmail.com',
+    city: 'Hyderabad',
   };
 
   const menu = [

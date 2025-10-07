@@ -33,13 +33,13 @@ export default function PremiumEditProfile() {
   const router = useRouter(); // Initialize the router hook
 
   const initialUser = {
-    name: 'Jane Doe',
-    email: 'jane.doe@example.com',
+    name: 'Jaswanth',
+    email: 'jaswanth@gmail.com',
     phone: '9876543210',
-    city: 'Kadapa',
-    state: 'Andhra Pradesh',
+    city: 'Hyderabad',
+    state: 'Telangana',
     pincode: '516001',
-    avatar: 'https://i.pravatar.cc/150?u=jane.doe'
+    avatar: 'https://i.pravatar.cc/150?u=jaswanth.doe'
   };
 
   const [form, setForm] = useState({ ...initialUser });
