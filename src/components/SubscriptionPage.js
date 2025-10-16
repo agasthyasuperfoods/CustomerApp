@@ -445,6 +445,9 @@
 //   );
 // }
 
+
+
+
 'use client';
 import React, { useMemo, useState, useEffect, useCallback } from 'react';
 import {
@@ -996,8 +999,6 @@ const PauseSubscriptionModal = ({ isOpen, onClose, onConfirm }) => {
     </div>
   );
 };
-
-
 // --- Main Page Component (Controller) ---
 export default function SubscriptionPage() {
   const [isSubscribed, setIsSubscribed] = useState(false); 
@@ -1037,3 +1038,4 @@ export default function SubscriptionPage() {
 
   return <NewSubscription onSubscribe={handleSubscribe} />;
 }
+
