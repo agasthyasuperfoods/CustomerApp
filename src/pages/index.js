@@ -12,6 +12,7 @@ function index() {
   return (
     <div>
       <Nav />
+      <ProductCard />
       <WhyChooseUs />
        <Recent />
       <ShopByMilkType />
