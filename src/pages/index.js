@@ -12,12 +12,9 @@ function index() {
   return (
     <div>
       <Nav />
-      <PromotionalBanner />
-      <ProductCard />
       <WhyChooseUs />
        <Recent />
       <ShopByMilkType />
-     
       <FooterNavigation />
     </div>
   )
