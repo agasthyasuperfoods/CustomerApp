@@ -54,13 +54,16 @@ export default function Login() {
     <div className="min-h-screen w-full flex flex-col justify-center" style={{ background: BG_SHADE }}>
       {/* Centered logo + heading block */}
       <div className="flex flex-col items-center justify-center" style={{ minHeight: "32vh" }}>
-        <Image
-          src="/logo.png"
-          alt="Agasthya Nutro Milk"
-          width={108}
-          height={108}
-          style={{ height: 'auto', marginBottom: 16 }}
-        />
+  <div style={{ width: 140, height: 140, position: "relative", margin: "0 auto 16px auto" }}>
+  <Image
+    src="/logo.png"
+    alt="Agasthya Nutro Milk"
+    fill
+    style={{ objectFit: 'contain' }}
+    priority
+  />
+</div>
+
         <h1 className="text-[25px] font-bold text-center text-gray-800 mb-2 tracking-tight">Login / Register</h1>
         <p className="text-center text-gray-600 mb-2">
           Enter your mobile number to continue
