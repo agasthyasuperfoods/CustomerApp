@@ -43,18 +43,17 @@ const Productcard = () => {
         </div>
         
         {/* Right Side Image (Visually appears first on mobile) */}
-       <div
-  className="flex-shrink-0 order-1 md:order-2 flex justify-center items-center"
-  style={{ width: 220, height: 220, position: "relative" }}
->
+   <div style={{ width: 220, height: 220, position: "relative", margin: "0 auto" }}>
   <Image
     src="/Milk.png"
     alt="Aagathya A2 Buffalo Milk Packet"
     fill
+    sizes="(max-width: 768px) 70vw, 220px"
     style={{ objectFit: "contain" }}
     priority
   />
 </div>
+
 
       </div>
       
