@@ -9,6 +9,10 @@ export default function Document() {
         <meta name="theme-color" content="#FBBF24" />
         {/* You can also add an Apple touch icon for iOS home screens */}
         <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
+            <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+        />
       </Head>
       <body>
         <Main />
