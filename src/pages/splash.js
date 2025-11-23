@@ -10,7 +10,7 @@ export default function Splash() {
     const timer1 = setTimeout(() => setZoomIn(true), 1000);
     const timer2 = setTimeout(() => {
       const isLoggedIn = localStorage.getItem('userToken');
-      router.push(isLoggedIn ? '/login' : '/home');
+      router.push(isLoggedIn ? '/home' : '/login');
     }, 1850);
 
     return () => {
