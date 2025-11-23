@@ -1,0 +1,9 @@
+{
+  "name": "Agasthya Superfoods",
+  "short_name": "Agasthya",
+  "description": "Your daily fresh milk subscription service.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FEFCE8",
+  "theme_color": "#FBBF24"
+}
