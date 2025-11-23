@@ -79,18 +79,21 @@ export default function Login() {
               <div className="mb-3 px-3 py-2 bg-red-50 text-red-600 rounded w-full text-center text-xs">{error}</div>
             )}
             <form onSubmit={handlePhoneContinue} className="w-full flex flex-col gap-4">
-              <div className="flex w-full">
-                <span className="bg-[#FFF3CD] text-base font-semibold px-4 py-3 rounded-l-xl border border-[#FFD600] flex items-center select-none">🇮🇳 +91</span>
-                <input
-                  type="tel"
-                  placeholder="Mobile number"
-                  maxLength="10"
-                  className="flex-1 px-4 py-3 bg-white border border-[#FFD600] rounded-r-xl text-base outline-none"
-                  value={phone}
-                  onChange={e => setPhone(e.target.value.replace(/\D/g, ''))}
-                  required
-                />
-              </div>
+           <div className="flex w-full">
+  <span className="bg-[#FFF3CD] text-base font-bold px-4 py-3 rounded-l-xl border border-[#FFD600] flex items-center select-none text-gray-900">
+    🇮🇳 +91
+  </span>
+  <input
+    type="tel"
+    placeholder="Mobile number"
+    maxLength="10"
+    className="flex-1 px-4 py-3 bg-white border border-[#FFD600] rounded-r-xl text-base outline-none placeholder-gray-700"
+    value={phone}
+    onChange={e => setPhone(e.target.value.replace(/\D/g, ''))}
+    required
+  />
+</div>
+
               <button
                 type="submit"
                 className="w-full bg-[#FFD600] text-white rounded-xl font-bold text-[18px] py-3"
