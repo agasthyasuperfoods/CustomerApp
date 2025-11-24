@@ -9,6 +9,8 @@ function Guesthome() {
 
 <Guestnav />   
 <Productcard />
+<Productcard />
+<Productcard />
 
 <Gfooter />
  </div>

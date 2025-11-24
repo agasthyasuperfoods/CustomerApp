@@ -51,8 +51,8 @@ export default function Gfooter() {
 
   const tabs = [
     { label: 'Home',          href: '/Guesthome',            Icon: HomeIcon },
-    { label: 'Subscription',  href: '/subscription',Icon: SubscriptionIcon },
-    { label: 'Account',       href: '/account',     Icon: AccountIcon },
+    { label: 'Subscription',  href: '/Gsubscription',Icon: SubscriptionIcon },
+    { label: 'Account',       href: '/Gaccount',     Icon: AccountIcon },
   ];
 
   return (
