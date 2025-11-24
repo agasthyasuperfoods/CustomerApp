@@ -1,5 +1,8 @@
 @import "tailwindcss";
 
+/* ------------------------------
+   THEME VARIABLES
+--------------------------------*/
 :root {
   --background: #ffffff;
   --foreground: #171717;
@@ -14,13 +17,55 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #ffffff;
+    --background: #000000;
     --foreground: #ededed;
   }
+}
+
+/* ------------------------------
+   APP-LIKE MOBILE BEHAVIOR
+--------------------------------*/
+html,
+body {
+  height: 100%;
+  overscroll-behavior: none;       /* No rubber-band stretching */
+  touch-action: pan-x pan-y;       /* Prevent weird gestures */
+  margin: 0;
+  padding: 0;
+  -webkit-text-size-adjust: 100%;  /* Prevent text zooming on iOS */
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+  
+}
+body::-webkit-scrollbar, html::-webkit-scrollbar {
+  width: 0px;
+  background: transparent!important;
+}
+/* For Firefox: */
+body {
+  scrollbar-width: none; /* Hide scrollbar */
+}
+html {
+  scrollbar-width: none;
+}* {
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent; /* No tap highlight */
+}
+
+/* Disable image dragging */
+img {
+  user-drag: none;
+  -webkit-user-drag: none;
+  pointer-events: none;
+}
+
+/* Optional container */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
 }
