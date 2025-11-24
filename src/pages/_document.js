@@ -4,15 +4,15 @@ export default function Document() {
   return (
     <Html lang="en">
       <Head>
-        {/* Add these lines for PWA support */}
+        {/* PWA Support */}
         <link rel="manifest" href="/manifest.json" />
-        <meta name="theme-color" content="#FBBF24" />
-        {/* You can also add an Apple touch icon for iOS home screens */}
+        <meta name="theme-color" content="#FFD600" />
         <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
+        {/* Viewport: Prevent zoom/stretch, give native app feel */}
         <meta
-  name="viewport"
-  content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
-/>
+          name="viewport"
+          content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
+        />
       </Head>
       <body>
         <Main />

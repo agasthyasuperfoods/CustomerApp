@@ -28,7 +28,7 @@ export default function Splash() {
 
   return (
     <div
-      className={`fixed inset-0 z-50 flex items-center justify-center bg-[#ffd500ac] transition-opacity duration-500 ${
+      className={`fixed inset-0 z-50 flex items-center justify-center bg-[#ffffff] transition-opacity duration-500 ${
         zoom ? 'opacity-0' : 'opacity-100'
       }`}
       style={{

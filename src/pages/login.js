@@ -89,14 +89,17 @@ export default function Login() {
               )}
               <form onSubmit={handlePhoneContinue} className="w-full flex flex-col gap-4">
                 <div className="flex w-full">
-                  <span className="bg-[#FFF3CD] text-base font-bold px-4 py-3 rounded-l-xl border border-gray-300 flex items-center select-none text-gray-900">
+                  <span
+                    className="bg-[#FFF3CD] text-base font-bold px-4 py-3 rounded-l-xl border border-gray-300 flex items-center select-none text-gray-900 whitespace-nowrap"
+                    style={{ whiteSpace: 'nowrap' }}
+                  >
                     🇮🇳 +91
                   </span>
                   <input
                     type="tel"
                     placeholder="Mobile number"
                     maxLength="10"
-                    className="flex-1 px-4 py-3 bg-white border border-gray-300 rounded-r-xl text-base outline-none placeholder-gray-700 text-black focus:border-gray-500 focus:ring-0"
+                    className="flex-1 px-4 py-3 bg-white border border-gray-300 rounded-r-xl text-base outline-none placeholder-gray-700 text-black "
                     value={phone}
                     onChange={e => setPhone(e.target.value.replace(/\D/g, ''))}
                     required
