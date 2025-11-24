@@ -17,9 +17,9 @@ const CartIcon = () => (
   </svg>
 );
 const SearchIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <circle cx="11" cy="11" r="8" />
-    <line x1="21" y1="21" x2="16.65" y2="16.65" />
+  <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="15" cy="15" r="10" />
+    <line x1="28" y1="28" x2="21.65" y2="21.65" />
   </svg>
 );
 const LocationIcon = () => (
@@ -29,14 +29,12 @@ const LocationIcon = () => (
   </svg>
 );
 
-// --- Delivery and Product Options ---
 const ADDRESS_OPTIONS = [
   "Madhapur, Hyderabad",
   "Gachibowli, Hyderabad",
   "Kondapur, Hyderabad",
   "Enter address...",
 ];
-
 const SEARCH_PRODUCTS = [
   "A2 Buffalo milk",
   "Dairy products",
@@ -122,9 +120,9 @@ const Guestnav = () => {
             </button>
           </div>
         </div>
-        {/* Search bar with GSAP animated placeholder */}
-        <div className="relative flex items-center">
-          <div className="absolute left-4 text-slate-400 pointer-events-none">
+        {/* Search bar, all items aligned in a single row */}
+        <div className="relative flex items-center h-[48px]">
+          <div className="absolute left-4 flex items-center h-full text-slate-400 pointer-events-none">
             <SearchIcon />
           </div>
           <input
@@ -132,32 +130,27 @@ const Guestnav = () => {
             value={query}
             onChange={e => setQuery(e.target.value)}
             placeholder=" "
-            className="w-full rounded-xl bg-slate-100 py-3 pl-14 pr-4 text-slate-800"
-            style={{ border: "1px solid transparent" }}
+            className="w-full rounded-xl bg-slate-100 pl-14 pr-4 text-slate-800 text-lg font-semibold h-full outline-none placeholder-gray-700"
+            style={{ border: "1px solid transparent", lineHeight: '1.2' }}
             autoComplete="off"
           />
-          {/* GSAP dynamic placeholder */}
           {query === "" && (
             <span
-              className="absolute left-14 pointer-events-none text-slate-400"
+              className="absolute left-14 pointer-events-none text-slate-400 flex items-center whitespace-nowrap h-full"
               style={{
                 top: "50%",
                 transform: "translateY(-50%)",
-                width: "79%",
-                display: "flex",
-                alignItems: "center",
-                fontSize: "1rem",
-                height: "1.7em",
-                pointerEvents: "none"
+                fontSize: "1.15rem",
+                height: "100%",
+                lineHeight: "normal"
               }}
             >
-              <span className="font-normal">Search for&nbsp;</span>
+              <span className="font-normal whitespace-nowrap">Search for&nbsp;</span>
               <span
-                className="relative overflow-hidden"
+                className="relative overflow-hidden whitespace-nowrap"
                 style={{
                   display: "inline-grid",
-                  height: "1.7em",
-                  minWidth: "6em"
+                  minWidth: "6.5em"
                 }}
               >
                 {SEARCH_PRODUCTS.map((word, i) => (
