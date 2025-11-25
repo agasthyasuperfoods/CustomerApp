@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useRouter } from 'next/router';
-import gsap from "gsap";
 import Image from 'next/image';
 import { FiSearch, FiMapPin, FiShoppingCart, FiCreditCard } from 'react-icons/fi';
+import gsap from "gsap";
 
 const AREA_OPTIONS = [
   { name: "Jubilee Hills",   img: "/jublee.png" },
@@ -27,19 +27,25 @@ const Guestnav = () => {
   const [address, setAddress] = useState("");
   const [showDropdown, setShowDropdown] = useState(false);
 
-  // GSAP logic...
+  // GSAP animated placeholder logic
   const [phIndex, setPhIndex] = useState(0);
   const wordsRef = useRef([]);
   const tl = useRef();
 
   useEffect(() => {
     if (query) return;
-    tl.current = gsap.timeline({ repeat: -1, defaults: { duration: 0.7, ease: "power4.inOut" } });
+    tl.current = gsap.timeline({ repeat: -1, defaults: { duration: 0.6, ease: "power4.inOut" } });
     SEARCH_PRODUCTS.forEach((word, i) => {
-      tl.current.fromTo(wordsRef.current[i], { yPercent: 100, opacity: 0 }, {
-        yPercent: 0, opacity: 1, onStart: () => setPhIndex(i)
-      });
-      tl.current.to(wordsRef.current[i], { yPercent: -100, opacity: 0, delay: 1 }, "+=0");
+      tl.current.fromTo(
+        wordsRef.current[i],
+        { yPercent: 100, opacity: 0 },
+        {
+          yPercent: 0,
+          opacity: 1,
+          onStart: () => setPhIndex(i),
+        }
+      );
+      tl.current.to(wordsRef.current[i], { yPercent: -80, opacity: 0, delay: 0.7 }, "+=0");
     });
     return () => tl.current && tl.current.kill();
   }, [query]);
@@ -48,14 +54,13 @@ const Guestnav = () => {
     router.push('/Gwallet');
   };
 
-  // Only close if clicked on overlay (not modal itself)
   const handleOverlayClick = (e) => {
     if (e.target.id === "area-dropdown-overlay") setShowDropdown(false);
   };
 
   return (
     <header className="fixed top-0 left-0 w-full z-50 bg-white p-3 shadow-sm">
-      <div className="max-w-4xl mx-auto flex flex-col gap-4">
+      <div className="max-w-4xl mx-auto flex flex-col gap-2">
         <div className="flex items-center justify-between">
           <div className="relative">
             <button
@@ -63,98 +68,134 @@ const Guestnav = () => {
               className="flex items-center gap-2 px-3 py-1 text-[15px] text-amber-600 font-semibold rounded-lg ring-1 ring-amber-100 bg-amber-50"
             >
               <FiMapPin size={22} style={{ color: "#f59e42" }} />
-              <span className="truncate max-w-[120px]">
-                {address ? address : "Select Area"}
-              </span>
+              <span className="truncate max-w-[120px]">{address ? address : "Select Area"}</span>
               <svg width="18" height="18" fill="none" stroke="#f59e42" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <polyline points="6 9 9 12 12 9" />
               </svg>
             </button>
-            {showDropdown && (
-              <div
-                id="area-dropdown-overlay"
-                className="fixed inset-0 z-[120] flex items-center justify-center bg-black/10"
-                onClick={handleOverlayClick}
-              >
-                <div className="bg-white rounded-2xl p-7 max-w-xs w-full flex flex-col items-center"
-                  onClick={e => e.stopPropagation()} // Prevent closing when clicking inside modal
-                >
-                  <div className="text-xl font-semibold text-center mb-8 text-amber-700">
-                    Select Your Area
-                  </div>
-                  {/* Top two rows: 2 columns each */}
-                  <div className="grid grid-cols-2 gap-y-10 gap-x-10 w-full mb-0">
-                    {AREA_OPTIONS.slice(0, 4).map((area) => (
-                      <button
-                        key={area.name}
-                        onClick={() => { setAddress(area.name); setShowDropdown(false); }}
-                        className="flex flex-col items-center justify-center rounded-2xl transition py-2 active:scale-95"
-                        style={{ minWidth: '100px' }}
-                      >
-                        <Image
-                          src={area.img}
-                          alt={area.name}
-                          width={96}
-                          height={96}
-                          style={{
-                            borderRadius: 15,
-                            objectFit: 'contain',
-                            background: "#fff",
-                          }}
-                        />
-                        <span className="text-base font-semibold text-gray-900 text-center mt-1">{area.name}</span>
-                      </button>
-                    ))}
-                  </div>
-                  {/* Last OU Colony row - centered */}
-                  <div className="flex justify-center w-full mt-14">
-                    <button
-                      onClick={() => { setAddress(AREA_OPTIONS[4].name); setShowDropdown(false); }}
-                      className="flex flex-col items-center justify-center rounded-2xl transition py-2 active:scale-95"
-                      style={{ minWidth: '100px' }}
-                    >
-                      <Image
-                        src={AREA_OPTIONS[4].img}
-                        alt={AREA_OPTIONS[4].name}
-                        width={96}
-                        height={96}
-                        style={{
-                          borderRadius: 15,
-                          marginBottom: 14,
-                          objectFit: 'contain',
-                          background: "#fff",
-                        }}
-                      />
-                      <span className="text-base font-semibold text-gray-900 text-center mt-1">
-                        {AREA_OPTIONS[4].name}
-                      </span>
-                    </button>
-                  </div>
-                </div>
-              </div>
-            )}
+          {showDropdown && (
+  <div
+    id="area-dropdown-overlay"
+    className="fixed inset-0 z-[120] flex items-center justify-center bg-black/10"
+    onClick={handleOverlayClick}
+  >
+    <div
+      className="bg-white rounded-2xl"
+      style={{
+        width: "92vw",
+        minHeight: "440px",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        padding: 0
+      }}
+      onClick={e => e.stopPropagation()}
+    >
+      <div className="text-lg font-semibold text-center mb-4 text-amber-700" style={{ marginTop: 18 }}>
+        Select Your Area
+      </div>
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: '1fr 1fr',
+        gap: '0px',
+        width: '100%',
+        marginTop: 12,
+        marginBottom: 18
+      }}>
+        {AREA_OPTIONS.slice(0, 4).map(area => (
+          <button
+            key={area.name}
+            onClick={() => { setAddress(area.name); setShowDropdown(false); }}
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              borderRadius: 0,
+              padding: 0,
+              marginBottom: 0,
+              minWidth: "50px",
+              background: 'none'
+            }}
+            className="active:scale-95"
+          >
+            <Image
+              src={area.img}
+              alt={area.name}
+              width={120}
+              height={120}
+              style={{
+                borderRadius: 0,
+                marginBottom: 2,
+                objectFit: 'contain',
+                background: "transparent",
+                boxShadow: 'none'
+              }}
+            />
+            <span style={{fontSize:"15px", fontWeight:600, marginTop:2}}>{area.name}</span>
+          </button>
+        ))}
+      </div>
+      <div style={{
+        display: 'flex',
+        justifyContent: 'center',
+        width: '100%',
+        marginBottom: 8
+      }}>
+        <button
+          onClick={() => { setAddress(AREA_OPTIONS[4].name); setShowDropdown(false); }}
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            borderRadius: 0,
+            padding: 0,
+            minWidth: "50px",
+            background: 'none'
+          }}
+          className="active:scale-95"
+        >
+          <Image
+            src={AREA_OPTIONS[4].img}
+            alt={AREA_OPTIONS[4].name}
+            width={120}
+            height={120}
+            style={{
+              borderRadius: 0,
+              marginBottom: 2,
+              objectFit: 'contain',
+              background: "transparent",
+              boxShadow: 'none'
+            }}
+          />
+          <span style={{fontSize:"15px", fontWeight:600, marginTop:2}}>{AREA_OPTIONS[4].name}</span>
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+
           </div>
-          <div className="flex items-center space-x-5">
+          <div className="flex items-center space-x-3">
             <button className="text-slate-600 hover:text-amber-500 transition-colors" onClick={handleGoToWallet}>
-              <FiCreditCard size={28} />
+              <FiCreditCard size={23} />
             </button>
             <button className="text-slate-600 hover:text-amber-500 transition-colors" onClick={handleGoToWallet}>
-              <FiShoppingCart size={28} />
+              <FiShoppingCart size={23} />
             </button>
           </div>
         </div>
         {/* Search bar */}
-        <div className="relative flex items-center h-[48px]">
+        <div className="relative flex items-center h-[38px]">
           <div className="absolute left-4 flex items-center h-full text-slate-400 pointer-events-none">
-            <FiSearch size={32} />
+            <FiSearch size={24} />
           </div>
           <input
             type="text"
             value={query}
             onChange={e => setQuery(e.target.value)}
             placeholder=" "
-            className="w-full rounded-xl bg-slate-100 pl-14 pr-4 text-slate-800 text-lg font-semibold h-full outline-none placeholder-gray-700"
-            style={{ border: "1px solid transparent", lineHeight: '1.2' }}
+            className="w-full rounded-xl bg-slate-100 pl-14 pr-4 text-slate-800 text-base font-medium h-full outline-none placeholder-gray-700"
+            style={{ border: "1px solid transparent", lineHeight: '1.05' }}
             autoComplete="off"
           />
           {query === "" && (
@@ -163,7 +204,7 @@ const Guestnav = () => {
               style={{
                 top: "50%",
                 transform: "translateY(-50%)",
-                fontSize: "1.15rem",
+                fontSize: "1rem",
                 height: "100%",
                 lineHeight: "normal"
               }}
@@ -173,7 +214,7 @@ const Guestnav = () => {
                 className="relative overflow-hidden whitespace-nowrap"
                 style={{
                   display: "inline-grid",
-                  minWidth: "6.5em"
+                  minWidth: "6em"
                 }}
               >
                 {SEARCH_PRODUCTS.map((word, i) => (

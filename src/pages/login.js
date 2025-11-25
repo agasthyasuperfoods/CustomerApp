@@ -2,9 +2,6 @@ import { useState, useRef } from 'react';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
 
-const YELLOW = "#FFD600";
-const BG_SHADE = "#FFFFFF";
-
 export default function Login() {
   const router = useRouter();
   const [step, setStep] = useState('phone');
@@ -14,7 +11,6 @@ export default function Login() {
   const [error, setError] = useState('');
   const otpRefs = [useRef(), useRef(), useRef(), useRef()];
 
-  // --- Handlers ---
   const handlePhoneContinue = e => {
     e.preventDefault();
     if (phone.length !== 10) setError('Please enter a valid 10-digit number');
@@ -50,7 +46,7 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen w-full flex flex-col justify-center items-center" style={{ background: BG_SHADE }}>
+    <div className="min-h-screen w-full flex flex-col justify-center items-center bg-white">
       <div
         style={{
           maxWidth: 410,
@@ -91,7 +87,6 @@ export default function Login() {
                 <div className="flex w-full">
                   <span
                     className="bg-[#FFF3CD] text-base font-bold px-4 py-3 rounded-l-xl border border-gray-300 flex items-center select-none text-gray-900 whitespace-nowrap"
-                    style={{ whiteSpace: 'nowrap' }}
                   >
                     🇮🇳 +91
                   </span>
@@ -99,7 +94,7 @@ export default function Login() {
                     type="tel"
                     placeholder="Mobile number"
                     maxLength="10"
-                    className="flex-1 px-4 py-3 bg-white border border-gray-300 rounded-r-xl text-base outline-none placeholder-gray-700 text-black "
+                    className="flex-1 px-4 py-3 bg-white border border-gray-300 rounded-r-xl text-base outline-none placeholder-gray-700 text-black"
                     value={phone}
                     onChange={e => setPhone(e.target.value.replace(/\D/g, ''))}
                     required
@@ -107,7 +102,7 @@ export default function Login() {
                 </div>
                 <button
                   type="submit"
-                  className="w-full bg-[#FFD600] text-white rounded-xl font-bold text-[18px] py-3 mt-2"
+                  className="w-full bg-yellow-400 text-gray-900 font-bold py-3 px-8 rounded-lg hover:bg-yellow-500 transition-colors mt-2" // styled as requested
                 >
                   Continue
                 </button>
@@ -131,10 +126,10 @@ export default function Login() {
             <div className="flex flex-col items-center">
               <div className="mb-3 mt-3">
                 <svg width="54" height="54" viewBox="0 0 60 60" fill="none">
-                  <rect x="9" y="15" width="42" height="30" rx="5" stroke={YELLOW} strokeWidth="2" fill="#FFF8E1" />
-                  <rect x="22" y="30" width="16" height="4" rx="2" fill={YELLOW} />
-                  <rect x="28" y="22" width="10" height="4" rx="2" fill={YELLOW} />
-                  <circle cx="16" cy="34" r="2" fill={YELLOW} />
+                  <rect x="9" y="15" width="42" height="30" rx="5" stroke="#FFD600" strokeWidth="2" fill="#FFF8E1" />
+                  <rect x="22" y="30" width="16" height="4" rx="2" fill="#FFD600" />
+                  <rect x="28" y="22" width="10" height="4" rx="2" fill="#FFD600" />
+                  <circle cx="16" cy="34" r="2" fill="#FFD600" />
                 </svg>
               </div>
               <h1 className="text-[20px] font-semibold text-center text-gray-800 mb-1">OTP Verification</h1>
@@ -150,7 +145,7 @@ export default function Login() {
                       inputMode="numeric"
                       maxLength="1"
                       ref={otpRefs[i]}
-                      className="border border-gray-300 bg-white text-center rounded-lg w-12 h-12 text-2xl font-bold text-black focus:border-gray-500 focus:ring-0"
+                      className="border border-gray-300 bg-white text-center rounded-lg w-12 h-12 text-2xl font-bold text-black focus:border-gray-500"
                       value={val}
                       onChange={e => handleChangeOtp(i, e.target.value)}
                       onKeyDown={e => handleKeyDownOtp(i, e)}
@@ -165,7 +160,7 @@ export default function Login() {
                   <button
                     type="button"
                     onClick={() => alert('Resending OTP...')}
-                    className="text-[#FFD600] text-xs font-semibold px-0"
+                    className="text-yellow-400 text-xs font-semibold px-0"
                     style={{ textDecoration: "none" }}
                   >
                     RESEND
@@ -173,14 +168,14 @@ export default function Login() {
                 </div>
                 <button
                   type="submit"
-                  className="w-full bg-[#FFD600] text-white rounded-lg text-base font-bold py-3"
+                  className="w-full bg-yellow-400 text-gray-900 font-bold py-3 px-8 rounded-lg hover:bg-yellow-500 transition-colors"
                 >
                   Continue
                 </button>
               </form>
               <button
                 onClick={() => setStep('phone')}
-                className="block w-full my-5 text-center text-[#FFD600] font-bold text-xs"
+                className="block w-full my-5 text-center text-yellow-400 font-bold text-xs"
                 style={{ textDecoration: "none" }}
               >
                 Change Number
@@ -200,21 +195,21 @@ export default function Login() {
                 <input
                   type="text"
                   placeholder="Your name"
-                  className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl text-base outline-none text-black focus:border-gray-500 focus:ring-0"
+                  className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl text-base outline-none text-black focus:border-gray-500"
                   value={name}
                   onChange={e => setName(e.target.value)}
                   required
                 />
                 <button
                   type="submit"
-                  className="w-full bg-[#FFD600] text-white rounded-lg text-base font-bold py-3 mt-5"
+                  className="w-full bg-yellow-400 text-gray-900 font-bold py-3 px-8 rounded-lg hover:bg-yellow-500 transition-colors mt-5"
                 >
                   Continue
                 </button>
               </form>
               <button
                 onClick={() => setStep('phone')}
-                className="block w-full my-5 text-center text-[#FFD600] font-bold text-xs"
+                className="block w-full my-5 text-center text-yellow-400 font-bold text-xs"
                 style={{ textDecoration: "none" }}
               >
                 Use Different Number
@@ -222,12 +217,12 @@ export default function Login() {
             </div>
           )}
 
-          {/* Terms - not underlined */}
+          {/* Terms */}
           <div className="my-4 text-center text-xs text-gray-400">
             By continuing, you agree to our{' '}
             <a
               href="/terms"
-              className="text-[#FFD600] font-medium"
+              className="text-yellow-400 font-medium"
               style={{ textDecoration: "none" }}
             >
               Terms
@@ -235,7 +230,7 @@ export default function Login() {
             {' | '}
             <a
               href="/privacy"
-              className="text-[#FFD600] font-medium"
+              className="text-yellow-400 font-medium"
               style={{ textDecoration: "none" }}
             >
               Privacy

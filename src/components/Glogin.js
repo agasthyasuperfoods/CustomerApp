@@ -3,31 +3,37 @@ import Image from 'next/image';
 
 function Glogin() {
   return (
-    <div className="w-full flex flex-col justify-center items-center px-5" style={{ minHeight: "calc(100vh - 64px - 64px)", marginTop: "76px" }}>
-      {/* Logo image */}
-      <div className="mb-6">
-        <Image
-          src="/logo.png"
-          alt="App Logo"
-          width={160}
-          height={160}
-          style={{
-            objectFit: "contain",
-            background: "transparent",
-            display: "block"
-          }}
-          priority
-        />
-      </div>
-      {/* Message */}
-      <div className="mb-10 text-lg text-center text-gray-500 ">
+    // Centered fixed login area, with nav and footer height considered
+    <div
+      className="fixed inset-0 flex flex-col justify-center items-center px-5"
+      style={{
+        top: '64px',        // Height of your nav (adjust as needed)
+        bottom: '64px',     // Height of your footer (adjust as needed)
+        left: 0,
+        right: 0,
+        zIndex: 30
+      }}
+    >
+      <Image
+        src="/logo.png"
+        alt="App Logo"
+        width={160}
+        height={160}
+        style={{
+          objectFit: "contain",
+          background: "transparent",
+          display: "block"
+        }}
+        priority
+      />
+      <div className="mb-10 mt-6 text-lg text-center text-gray-700 font-medium">
         You are not logged in.<br />Please login to continue.
       </div>
-      {/* Login Button */}
+      {/* Button with reduced height */}
       <button
         type="button"
-        className="w-full max-w-xs bg-[#FFD600] text-white rounded-xl font-bold text-[20px]"
-        style={{ minWidth: 200 }}
+        className="w-full max-w-xs bg-[#FFD600] text-black rounded-2xl font-bold text-[22px] py-3 px-4 shadow-none transition-all duration-200 hover:scale-105 active:scale-95"
+        style={{ minWidth: 220 }}
       >
         Login
       </button>
