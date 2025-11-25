@@ -1,14 +1,15 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useRouter } from 'next/router';
 import gsap from "gsap";
-// React Icons imports
+import Image from 'next/image';
 import { FiSearch, FiMapPin, FiShoppingCart, FiCreditCard } from 'react-icons/fi';
 
-const ADDRESS_OPTIONS = [
-  "Madhapur, Hyderabad",
-  "Gachibowli, Hyderabad",
-  "Kondapur, Hyderabad",
-  "Enter address...",
+const AREA_OPTIONS = [
+  { name: "Jubilee Hills",   img: "/jublee.png" },
+  { name: "Manikonda",       img: "/manikonda.png" },
+  { name: "Narsing",         img: "/narsingi.png" },
+  { name: "Chitrapuri",      img: "/chitrapurihills.png" },
+  { name: "OU Colony",       img: "/ou.png" },
 ];
 
 const SEARCH_PRODUCTS = [
@@ -49,15 +50,18 @@ const Guestnav = () => {
     return () => tl.current && tl.current.kill();
   }, [query]);
 
-  // --- This function will navigate to /Gwallet page
   const handleGoToWallet = () => {
     router.push('/Gwallet');
+  };
+
+  // Close modal if user clicks outside the panel
+  const handleOverlayClick = (e) => {
+    if (e.target.id === "area-dropdown-overlay") setShowDropdown(false);
   };
 
   return (
     <header className="fixed top-0 left-0 w-full z-50 bg-white p-3 shadow-sm">
       <div className="max-w-4xl mx-auto flex flex-col gap-4">
-        {/* Top section: Address dropdown + icons */}
         <div className="flex items-center justify-between">
           <div className="relative">
             <button
@@ -73,16 +77,38 @@ const Guestnav = () => {
               </svg>
             </button>
             {showDropdown && (
-              <div className="absolute left-0 mt-2 bg-white rounded-xl shadow border border-amber-100 w-56 z-50">
-                {ADDRESS_OPTIONS.map((addr) => (
-                  <button
-                    key={addr}
-                    onClick={() => { setAddress(addr); setShowDropdown(false); }}
-                    className="block w-full text-left px-4 py-2 text-slate-700 hover:bg-amber-50"
-                  >
-                    {addr}
-                  </button>
-                ))}
+              <div
+                id="area-dropdown-overlay"
+                className="fixed inset-0 z-[120] flex items-center justify-center bg-black/15" // lighter overlay for mobile
+                onClick={handleOverlayClick}
+              >
+                <div className="bg-white rounded-2xl p-6 max-w-xs w-full flex flex-col items-center">
+                  <div className="text-xl font-semibold text-center mb-6 text-amber-700">
+                    Select Your Area
+                  </div>
+                  <div className="grid grid-cols-2 gap-y-7 gap-x-7 w-full">
+                    {AREA_OPTIONS.map((area) => (
+                      <button
+                        key={area.name}
+                        onClick={() => { setAddress(area.name); setShowDropdown(false); }}
+                        className="flex flex-col items-center justify-center hover:bg-amber-50 rounded-2xl transition py-2 active:scale-95"
+                      >
+                        <Image
+                          src={area.img}
+                          alt={area.name}
+                          width={70}
+                          height={70}
+                          style={{
+                            borderRadius: 14,
+                            marginBottom: 10,
+                            objectFit: 'contain',
+                          }}
+                        />
+                        <span className="text-base font-semibold text-gray-700 text-center mt-1">{area.name}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
               </div>
             )}
           </div>
