@@ -21,19 +21,30 @@ const SEARCH_PRODUCTS = [
   "Paneer"
 ];
 
-function AreaButton({ area, setAddress, setShowDropdown, width = 120, height = 120, labelSize = 15, bold = 600 }) {
+function AreaButton({
+  area,
+  setAddress,
+  setShowDropdown,
+  width = 85,
+  height = 58,
+  labelSize = 15,
+  bold = 600,
+}) {
   return (
     <button
       key={area.name}
-      onClick={() => { setAddress(area.name); setShowDropdown(false); }}
+      onClick={() => {
+        setAddress(area.name);
+        setShowDropdown(false);
+      }}
       style={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
         borderRadius: 0,
         padding: 0,
         minWidth: "50px",
-        background: 'none'
+        background: "none",
       }}
       className="active:scale-95"
     >
@@ -44,16 +55,22 @@ function AreaButton({ area, setAddress, setShowDropdown, width = 120, height = 1
         height={height}
         style={{
           borderRadius: 0,
-          marginBottom: 2,
-          objectFit: 'contain',
+          marginBottom: 1,
+          objectFit: "contain",
           background: "transparent",
-          boxShadow: 'none',
+          boxShadow: "none",
           height: `${height}px`,
           width: `${width}px`,
-          display: "block"
+          display: "block",
         }}
       />
-      <span style={{ fontSize: `${labelSize}px`, fontWeight: bold, marginTop: 2 }}>
+      <span
+        style={{
+          fontSize: `${labelSize}px`,
+          fontWeight: bold,
+          marginTop: 1,
+        }}
+      >
         {area.name}
       </span>
     </button>
@@ -62,7 +79,7 @@ function AreaButton({ area, setAddress, setShowDropdown, width = 120, height = 1
 
 const Guestnav = () => {
   const router = useRouter();
-  const [query, setQuery] = useState('');
+  const [query, setQuery] = useState("");
   const [address, setAddress] = useState("");
   const [showDropdown, setShowDropdown] = useState(false);
 
@@ -73,7 +90,10 @@ const Guestnav = () => {
 
   useEffect(() => {
     if (query) return;
-    tl.current = gsap.timeline({ repeat: -1, defaults: { duration: 0.6, ease: "power4.inOut" } });
+    tl.current = gsap.timeline({
+      repeat: -1,
+      defaults: { duration: 0.6, ease: "power4.inOut" },
+    });
     SEARCH_PRODUCTS.forEach((word, i) => {
       tl.current.fromTo(
         wordsRef.current[i],
@@ -84,13 +104,17 @@ const Guestnav = () => {
           onStart: () => setPhIndex(i),
         }
       );
-      tl.current.to(wordsRef.current[i], { yPercent: -80, opacity: 0, delay: 0.7 }, "+=0");
+      tl.current.to(
+        wordsRef.current[i],
+        { yPercent: -80, opacity: 0, delay: 0.7 },
+        "+=0"
+      );
     });
     return () => tl.current && tl.current.kill();
   }, [query]);
 
   const handleGoToWallet = () => {
-    router.push('/Gwallet');
+    router.push("/Gwallet");
   };
 
   const handleOverlayClick = (e) => {
@@ -107,8 +131,18 @@ const Guestnav = () => {
               className="flex items-center gap-2 px-3 py-1 text-[15px] text-amber-600 font-semibold rounded-lg ring-1 ring-amber-100 bg-amber-50"
             >
               <FiMapPin size={22} style={{ color: "#f59e42" }} />
-              <span className="truncate max-w-[120px]">{address ? address : "Select Area"}</span>
-              <svg width="18" height="18" fill="none" stroke="#f59e42" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <span className="truncate max-w-[120px]">
+                {address ? address : "Select Area"}
+              </span>
+              <svg
+                width="18"
+                height="18"
+                fill="none"
+                stroke="#f59e42"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
                 <polyline points="6 9 9 12 12 9" />
               </svg>
             </button>
@@ -122,82 +156,116 @@ const Guestnav = () => {
                   className="bg-white rounded-2xl"
                   style={{
                     width: "92vw",
-                    minHeight: "440px",
+                    minHeight: "205px", // Modal height stays compact
                     display: "flex",
                     flexDirection: "column",
                     alignItems: "center",
-                    padding: 0
+                    padding: 0,
                   }}
-                  onClick={e => e.stopPropagation()}
+                  onClick={(e) => e.stopPropagation()}
                 >
-                  <div className="text-lg font-semibold text-center mb-6 text-amber-700" style={{ marginTop: 18 }}>
+                  <div
+                    className="text-lg font-semibold text-center mb-3 text-amber-700"
+                    style={{ marginTop: 10 }}
+                  >
                     Select Your Area
                   </div>
-                  {/* 2x2 grid for first four */}
-                  <div style={{
-                    display: 'grid',
-                    gridTemplateColumns: '1fr 1fr',
-                    gap: "36px 0",
-                    width: '100%',
-                    marginTop: 12,
-                    marginBottom: 8,
-                  }}>
-                    <AreaButton area={AREA_OPTIONS[0]} setAddress={setAddress} setShowDropdown={setShowDropdown} />
-                    <AreaButton area={AREA_OPTIONS[1]} setAddress={setAddress} setShowDropdown={setShowDropdown} />
-                    <AreaButton area={AREA_OPTIONS[2]} setAddress={setAddress} setShowDropdown={setShowDropdown} />
-                    <AreaButton area={AREA_OPTIONS[3]} setAddress={setAddress} setShowDropdown={setShowDropdown} />
-                  </div>
-                  {/* Chitrapuri - fixed width/height wrapper to prevent shrink on load and with extra margin */}
                   <div
                     style={{
-                      display: 'flex',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      minHeight: "110px",
-                      width: '100%',
-                      marginBottom: 24,      // <-- bottom margin here
-                      marginTop: 12          // <-- top margin here
+                      display: "grid",
+                      gridTemplateColumns: "1fr 1fr",
+                      gap: "16px 0", // Reduced gap for compact modal
+                      width: "100%",
+                      marginTop: 2,
+                      marginBottom: 2,
+                    }}
+                  >
+                    {/* Regular height buttons */}
+                    <AreaButton
+                      area={AREA_OPTIONS[0]}
+                      setAddress={setAddress}
+                      setShowDropdown={setShowDropdown}
+                      width={85}
+                      height={58}
+                    />
+                    <AreaButton
+                      area={AREA_OPTIONS[1]}
+                      setAddress={setAddress}
+                      setShowDropdown={setShowDropdown}
+                      width={85}
+                      height={58}
+                    />
+                    <AreaButton
+                      area={AREA_OPTIONS[2]}
+                      setAddress={setAddress}
+                      setShowDropdown={setShowDropdown}
+                      width={85}
+                      height={58}
+                    />
+                    <AreaButton
+                      area={AREA_OPTIONS[3]}
+                      setAddress={setAddress}
+                      setShowDropdown={setShowDropdown}
+                      width={85}
+                      height={58}
+                    />
+                  </div>
+                  {/* Chitrapuri hills button is bigger here */}
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      minHeight: "110px", // Increased height
+                      width: "100%",
+                      marginBottom: 12,
+                      marginTop: 8,
                     }}
                   >
                     <button
-                      onClick={() => { setAddress(AREA_OPTIONS[4].name); setShowDropdown(false); }}
+                      onClick={() => {
+                        setAddress(AREA_OPTIONS[4].name);
+                        setShowDropdown(false);
+                      }}
                       style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
                         borderRadius: 0,
                         padding: 0,
                         minWidth: "50px",
-                        background: 'none'
+                        background: "none",
                       }}
                       className="active:scale-95"
                     >
-                      <div style={{
-                        width: "150px",
-                        height: "90px",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        marginTop: "10px",
-                        marginBottom: "10px"
-                      }}>
+                      <div
+                        style={{
+                          width: "155px", // Increased width
+                          height: "110px", // Increased height
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                        }}
+                      >
                         <Image
                           src={AREA_OPTIONS[4].img}
                           alt={AREA_OPTIONS[4].name}
-                          width={150}
-                          height={90}
+                          width={190}
+                          height={50}
                           style={{
                             borderRadius: 0,
                             objectFit: "contain",
                             background: "transparent",
                             boxShadow: "none",
                             display: "block",
-                            width: "150px",
-                            height: "90px"
+                            width: "70px",
+                            height: "110px",
                           }}
                         />
                       </div>
-                      <span style={{ fontSize: "15px", fontWeight: 600, marginTop: 2 }}>
+                      <span
+                        style={{ fontSize: "17px", fontWeight: 650, marginTop: 1 }}
+                      >
                         {AREA_OPTIONS[4].name}
                       </span>
                     </button>
@@ -207,10 +275,16 @@ const Guestnav = () => {
             )}
           </div>
           <div className="flex items-center space-x-3">
-            <button className="text-slate-600 hover:text-amber-500 transition-colors" onClick={handleGoToWallet}>
+            <button
+              className="text-slate-600 hover:text-amber-500 transition-colors"
+              onClick={handleGoToWallet}
+            >
               <FiCreditCard size={23} />
             </button>
-            <button className="text-slate-600 hover:text-amber-500 transition-colors" onClick={handleGoToWallet}>
+            <button
+              className="text-slate-600 hover:text-amber-500 transition-colors"
+              onClick={handleGoToWallet}
+            >
               <FiShoppingCart size={23} />
             </button>
           </div>
@@ -223,10 +297,10 @@ const Guestnav = () => {
           <input
             type="text"
             value={query}
-            onChange={e => setQuery(e.target.value)}
+            onChange={(e) => setQuery(e.target.value)}
             placeholder=" "
             className="w-full rounded-xl bg-slate-100 pl-14 pr-4 text-slate-800 text-base font-medium h-full outline-none placeholder-gray-700"
-            style={{ border: "1px solid transparent", lineHeight: '1.05' }}
+            style={{ border: "1px solid transparent", lineHeight: "1.05" }}
             autoComplete="off"
           />
           {query === "" && (
@@ -237,27 +311,29 @@ const Guestnav = () => {
                 transform: "translateY(-50%)",
                 fontSize: "1rem",
                 height: "100%",
-                lineHeight: "normal"
+                lineHeight: "normal",
               }}
             >
-              <span className="font-normal whitespace-nowrap">Search for&nbsp;</span>
+              <span className="font-normal whitespace-nowrap">
+                Search for&nbsp;
+              </span>
               <span
                 className="relative overflow-hidden whitespace-nowrap"
                 style={{
                   display: "inline-grid",
-                  minWidth: "6em"
+                  minWidth: "6em",
                 }}
               >
                 {SEARCH_PRODUCTS.map((word, i) => (
                   <span
                     key={word}
-                    ref={el => (wordsRef.current[i] = el)}
+                    ref={(el) => (wordsRef.current[i] = el)}
                     style={{
                       gridArea: "1/1/2/2",
                       position: "relative",
                       fontWeight: 450,
                       whiteSpace: "nowrap",
-                      display: i === phIndex ? "inline" : "none"
+                      display: i === phIndex ? "inline" : "none",
                     }}
                   >
                     {word}

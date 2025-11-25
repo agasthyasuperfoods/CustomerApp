@@ -1,5 +1,6 @@
 import Gfooter from '@/components/Gfooter'
 import Guestnav from '@/components/Guestnav'
+import PopularDeliveryPlaces from '@/components/PopularDeliveryPlaces'
 import Productcard from '@/components/Productcard'
 import React from 'react'
 
@@ -9,6 +10,7 @@ function Guesthome() {
 
 <Guestnav />   
 <Productcard />
+<PopularDeliveryPlaces />
 <Productcard />
 <Productcard />
 

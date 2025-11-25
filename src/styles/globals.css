@@ -35,7 +35,8 @@ html, body {
   box-sizing: border-box;
   -webkit-text-size-adjust: 100%;  /* Prevent text zooming on iOS */
   overflow-x: hidden !important;   /* Prevent horizontal scroll */
-  overflow-y: auto;                /* Enable vertical scroll, but hide bar */
+  overflow-y: auto;   
+  background-color: #f3f4f6;             /* Enable vertical scroll, but hide bar */
 }
 
 /* Hide scrollbars for webkit browsers (Chrome, Safari, Edge) */
@@ -72,4 +73,19 @@ img {
 .container {
   max-width: 1200px;
   margin: 0 auto;
+}
+/* In your globals.css or within the component */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  /* Hide scrollbar! */
+}
+.scroll-snap-x {
+  scroll-snap-type: x mandatory;
+}
+.snap-child {
+  scroll-snap-align: start;
 }

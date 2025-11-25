@@ -2,7 +2,6 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-// Import icons from react-icons
 import { FiHome, FiCalendar, FiUser } from 'react-icons/fi';
 
 const COLORS = {
@@ -41,13 +40,27 @@ export default function Gfooter() {
 
   const tabs = [
     { label: 'Home',          href: '/Guesthome',      Icon: HomeIcon },
-    { label: 'Subscription',  href: '/Gsubscription',  Icon: SubscriptionIcon }, // now calendar!
+    { label: 'Subscription',  href: '/Gsubscription',  Icon: SubscriptionIcon },
     { label: 'Account',       href: '/Gaccount',       Icon: AccountIcon },
   ];
 
   return (
-    <footer className="fixed inset-x-0 bottom-0 bg-white/95 backdrop-blur-lg z-50">
-      <nav className="max-w-md mx-auto flex justify-around items-center h-20 border-t border-gray-200">
+    <footer
+      className="
+        fixed inset-x-0 bottom-0 z-50
+        bg-white shadow-lg
+        flex justify-center
+        rounded-tl-[50px] rounded-tr-[50px]
+        transition-all
+      "
+      style={{
+        borderTopLeftRadius: '20px',
+        borderTopRightRadius: '20px',
+        // No border, just shadow, overrides any tailwind border
+        border: 'none',
+      }}
+    >
+      <nav className="max-w-md mx-auto w-full flex justify-around items-center h-20">
         {tabs.map(({ label, href, Icon }) => {
           const isActive =
             activePath === href ||
@@ -58,7 +71,15 @@ export default function Gfooter() {
               key={label}
               href={href}
               aria-current={isActive ? 'page' : undefined}
-              className="flex flex-col items-center justify-center w-full"
+              className="
+                flex flex-col items-center justify-center w-full
+                py-1
+                transition-all
+              "
+              style={{
+                textDecoration: 'none',
+                border: 'none', // remove bottom border
+              }}
             >
               <Icon isActive={isActive} />
               <span
