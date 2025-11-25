@@ -1,33 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
+import { useRouter } from 'next/router';
 import gsap from "gsap";
-
-// --- SVG Icons (unchanged) ---
-const WalletIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <rect x="2" y="7" width="20" height="14" rx="4" />
-    <path d="M6 7V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v2" />
-    <circle cx="16" cy="14" r="2" />
-  </svg>
-);
-const CartIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <circle cx="8" cy="21" r="1" />
-    <circle cx="19" cy="21" r="1" />
-    <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.16" />
-  </svg>
-);
-const SearchIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-    <circle cx="15" cy="15" r="10" />
-    <line x1="28" y1="28" x2="21.65" y2="21.65" />
-  </svg>
-);
-const LocationIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="#f59e42" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <circle cx="9" cy="8" r="4"/>
-    <path d="M9 2v2M9 14v2M2 9h2m10 0h2"/>
-  </svg>
-);
+// React Icons imports
+import { FiSearch, FiMapPin, FiShoppingCart, FiCreditCard } from 'react-icons/fi';
 
 const ADDRESS_OPTIONS = [
   "Madhapur, Hyderabad",
@@ -35,6 +10,7 @@ const ADDRESS_OPTIONS = [
   "Kondapur, Hyderabad",
   "Enter address...",
 ];
+
 const SEARCH_PRODUCTS = [
   "A2 Buffalo milk",
   "Dairy products",
@@ -45,9 +21,9 @@ const SEARCH_PRODUCTS = [
 ];
 
 const Guestnav = () => {
-  const [cartCount] = useState(5);
+  const router = useRouter();
   const [query, setQuery] = useState('');
-  const [address, setAddress] = useState(ADDRESS_OPTIONS[0]);
+  const [address, setAddress] = useState(""); // Start empty for 'Select Area'
   const [showDropdown, setShowDropdown] = useState(false);
 
   // GSAP animated placeholder logic
@@ -65,30 +41,35 @@ const Guestnav = () => {
         {
           yPercent: 0,
           opacity: 1,
-          onStart: () => setPhIndex(i)
+          onStart: () => setPhIndex(i),
         }
       );
       tl.current.to(wordsRef.current[i], { yPercent: -100, opacity: 0, delay: 1 }, "+=0");
     });
     return () => tl.current && tl.current.kill();
-    // eslint-disable-next-line
   }, [query]);
 
+  // --- This function will navigate to /Gwallet page
+  const handleGoToWallet = () => {
+    router.push('/Gwallet');
+  };
+
   return (
-   <header className="fixed top-0 left-0 w-full z-50 bg-white p-3 shadow-sm">
+    <header className="fixed top-0 left-0 w-full z-50 bg-white p-3 shadow-sm">
       <div className="max-w-4xl mx-auto flex flex-col gap-4">
         {/* Top section: Address dropdown + icons */}
         <div className="flex items-center justify-between">
-          {/* Address dropdown */}
           <div className="relative">
             <button
-              onClick={() => setShowDropdown(v => !v)}
-              className="flex items-center gap-1 px-3 py-1 text-[15px] text-amber-600 font-semibold rounded-lg ring-1 ring-amber-100 bg-amber-50"
+              onClick={() => setShowDropdown((v) => !v)}
+              className="flex items-center gap-2 px-3 py-1 text-[15px] text-amber-600 font-semibold rounded-lg ring-1 ring-amber-100 bg-amber-50"
             >
-              <LocationIcon />
-              <span className="truncate max-w-[110px]">{address}</span>
+              <FiMapPin size={22} style={{ color: "#f59e42" }} />
+              <span className="truncate max-w-[120px]">
+                {address ? address : "Select Area"}
+              </span>
               <svg width="18" height="18" fill="none" stroke="#f59e42" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <polyline points="6 9 9 12 12 9"/>
+                <polyline points="6 9 9 12 12 9" />
               </svg>
             </button>
             {showDropdown && (
@@ -105,25 +86,19 @@ const Guestnav = () => {
               </div>
             )}
           </div>
-          {/* Icons */}
           <div className="flex items-center space-x-5">
-            <button className="text-slate-600 hover:text-amber-500 transition-colors">
-              <WalletIcon />
+            <button className="text-slate-600 hover:text-amber-500 transition-colors" onClick={handleGoToWallet}>
+              <FiCreditCard size={28} />
             </button>
-            <button className="relative text-slate-600 hover:text-amber-500 transition-colors">
-              <CartIcon />
-              {cartCount > 0 && (
-                <div className="absolute -top-1 -right-2 bg-amber-400 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center border-2 border-white">
-                  {cartCount}
-                </div>
-              )}
+            <button className="text-slate-600 hover:text-amber-500 transition-colors" onClick={handleGoToWallet}>
+              <FiShoppingCart size={28} />
             </button>
           </div>
         </div>
-        {/* Search bar, all items aligned in a single row */}
+        {/* Search bar */}
         <div className="relative flex items-center h-[48px]">
           <div className="absolute left-4 flex items-center h-full text-slate-400 pointer-events-none">
-            <SearchIcon />
+            <FiSearch size={32} />
           </div>
           <input
             type="text"

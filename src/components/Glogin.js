@@ -26,8 +26,8 @@ function Glogin() {
       {/* Login Button */}
       <button
         type="button"
-        className="w-full max-w-xs bg-[#FFD600] text-white rounded-2xl font-bold text-[22px] py-5 px-4 shadow-none transition-all duration-200 hover:scale-105 active:scale-95"
-        style={{ minWidth: 220 }}
+        className="w-full max-w-xs bg-[#FFD600] text-white rounded-xl font-bold text-[20px]"
+        style={{ minWidth: 200 }}
       >
         Login
       </button>
