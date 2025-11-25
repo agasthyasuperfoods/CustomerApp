@@ -5,11 +5,11 @@ import { FiSearch, FiMapPin, FiShoppingCart, FiCreditCard } from 'react-icons/fi
 import gsap from "gsap";
 
 const AREA_OPTIONS = [
-  { name: "Jubilee Hills",   img: "/jublee.png" },
-  { name: "Manikonda",       img: "/manikonda.png" },
-  { name: "Narsing",         img: "/narsingi.png" },
-  { name: "Chitrapuri",      img: "/chitrapurihills.png" },
-  { name: "OU Colony",       img: "/ou.png" },
+  { name: "Narsing",       img: "/narsingi.png" },
+  { name: "Manikonda",     img: "/manikonda.png" },
+  { name: "Jubilee Hills", img: "/jublee.png" },
+  { name: "OU Colony",     img: "/ou.png" },
+  { name: "Chitrapuri",    img: "/chitrapurihills.png" },
 ];
 
 const SEARCH_PRODUCTS = [
@@ -20,6 +20,45 @@ const SEARCH_PRODUCTS = [
   "Ghee",
   "Paneer"
 ];
+
+function AreaButton({ area, setAddress, setShowDropdown, width = 120, height = 120, labelSize = 15, bold = 600 }) {
+  return (
+    <button
+      key={area.name}
+      onClick={() => { setAddress(area.name); setShowDropdown(false); }}
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        borderRadius: 0,
+        padding: 0,
+        minWidth: "50px",
+        background: 'none'
+      }}
+      className="active:scale-95"
+    >
+      <Image
+        src={area.img}
+        alt={area.name}
+        width={width}
+        height={height}
+        style={{
+          borderRadius: 0,
+          marginBottom: 2,
+          objectFit: 'contain',
+          background: "transparent",
+          boxShadow: 'none',
+          height: `${height}px`,
+          width: `${width}px`,
+          display: "block"
+        }}
+      />
+      <span style={{ fontSize: `${labelSize}px`, fontWeight: bold, marginTop: 2 }}>
+        {area.name}
+      </span>
+    </button>
+  );
+}
 
 const Guestnav = () => {
   const router = useRouter();
@@ -73,107 +112,99 @@ const Guestnav = () => {
                 <polyline points="6 9 9 12 12 9" />
               </svg>
             </button>
-          {showDropdown && (
-  <div
-    id="area-dropdown-overlay"
-    className="fixed inset-0 z-[120] flex items-center justify-center bg-black/10"
-    onClick={handleOverlayClick}
-  >
-    <div
-      className="bg-white rounded-2xl"
-      style={{
-        width: "92vw",
-        minHeight: "440px",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        padding: 0
-      }}
-      onClick={e => e.stopPropagation()}
-    >
-      <div className="text-lg font-semibold text-center mb-4 text-amber-700" style={{ marginTop: 18 }}>
-        Select Your Area
-      </div>
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: '1fr 1fr',
-        gap: '0px',
-        width: '100%',
-        marginTop: 12,
-        marginBottom: 18
-      }}>
-        {AREA_OPTIONS.slice(0, 4).map(area => (
-          <button
-            key={area.name}
-            onClick={() => { setAddress(area.name); setShowDropdown(false); }}
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              borderRadius: 0,
-              padding: 0,
-              marginBottom: 0,
-              minWidth: "50px",
-              background: 'none'
-            }}
-            className="active:scale-95"
-          >
-            <Image
-              src={area.img}
-              alt={area.name}
-              width={120}
-              height={120}
-              style={{
-                borderRadius: 0,
-                marginBottom: 2,
-                objectFit: 'contain',
-                background: "transparent",
-                boxShadow: 'none'
-              }}
-            />
-            <span style={{fontSize:"15px", fontWeight:600, marginTop:2}}>{area.name}</span>
-          </button>
-        ))}
-      </div>
-      <div style={{
-        display: 'flex',
-        justifyContent: 'center',
-        width: '100%',
-        marginBottom: 8
-      }}>
-        <button
-          onClick={() => { setAddress(AREA_OPTIONS[4].name); setShowDropdown(false); }}
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            borderRadius: 0,
-            padding: 0,
-            minWidth: "50px",
-            background: 'none'
-          }}
-          className="active:scale-95"
-        >
-          <Image
-            src={AREA_OPTIONS[4].img}
-            alt={AREA_OPTIONS[4].name}
-            width={120}
-            height={120}
-            style={{
-              borderRadius: 0,
-              marginBottom: 2,
-              objectFit: 'contain',
-              background: "transparent",
-              boxShadow: 'none'
-            }}
-          />
-          <span style={{fontSize:"15px", fontWeight:600, marginTop:2}}>{AREA_OPTIONS[4].name}</span>
-        </button>
-      </div>
-    </div>
-  </div>
-)}
-
+            {showDropdown && (
+              <div
+                id="area-dropdown-overlay"
+                className="fixed inset-0 z-[120] flex items-center justify-center bg-black/10"
+                onClick={handleOverlayClick}
+              >
+                <div
+                  className="bg-white rounded-2xl"
+                  style={{
+                    width: "92vw",
+                    minHeight: "440px",
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    padding: 0
+                  }}
+                  onClick={e => e.stopPropagation()}
+                >
+                  <div className="text-lg font-semibold text-center mb-6 text-amber-700" style={{ marginTop: 18 }}>
+                    Select Your Area
+                  </div>
+                  {/* 2x2 grid for first four */}
+                  <div style={{
+                    display: 'grid',
+                    gridTemplateColumns: '1fr 1fr',
+                    gap: "36px 0",
+                    width: '100%',
+                    marginTop: 12,
+                    marginBottom: 8,
+                  }}>
+                    <AreaButton area={AREA_OPTIONS[0]} setAddress={setAddress} setShowDropdown={setShowDropdown} />
+                    <AreaButton area={AREA_OPTIONS[1]} setAddress={setAddress} setShowDropdown={setShowDropdown} />
+                    <AreaButton area={AREA_OPTIONS[2]} setAddress={setAddress} setShowDropdown={setShowDropdown} />
+                    <AreaButton area={AREA_OPTIONS[3]} setAddress={setAddress} setShowDropdown={setShowDropdown} />
+                  </div>
+                  {/* Chitrapuri - fixed width/height wrapper to prevent shrink on load and with extra margin */}
+                  <div
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      minHeight: "110px",
+                      width: '100%',
+                      marginBottom: 24,      // <-- bottom margin here
+                      marginTop: 12          // <-- top margin here
+                    }}
+                  >
+                    <button
+                      onClick={() => { setAddress(AREA_OPTIONS[4].name); setShowDropdown(false); }}
+                      style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        borderRadius: 0,
+                        padding: 0,
+                        minWidth: "50px",
+                        background: 'none'
+                      }}
+                      className="active:scale-95"
+                    >
+                      <div style={{
+                        width: "150px",
+                        height: "90px",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        marginTop: "10px",
+                        marginBottom: "10px"
+                      }}>
+                        <Image
+                          src={AREA_OPTIONS[4].img}
+                          alt={AREA_OPTIONS[4].name}
+                          width={150}
+                          height={90}
+                          style={{
+                            borderRadius: 0,
+                            objectFit: "contain",
+                            background: "transparent",
+                            boxShadow: "none",
+                            display: "block",
+                            width: "150px",
+                            height: "90px"
+                          }}
+                        />
+                      </div>
+                      <span style={{ fontSize: "15px", fontWeight: 600, marginTop: 2 }}>
+                        {AREA_OPTIONS[4].name}
+                      </span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
           <div className="flex items-center space-x-3">
             <button className="text-slate-600 hover:text-amber-500 transition-colors" onClick={handleGoToWallet}>
