@@ -75,7 +75,7 @@ const Guestnav = () => {
   }, [query]);
 
   return (
-    <header className="sticky top-0 z-50 bg-white p-3 shadow-sm">
+   <header className="fixed top-0 left-0 w-full z-50 bg-white p-3 shadow-sm">
       <div className="max-w-4xl mx-auto flex flex-col gap-4">
         {/* Top section: Address dropdown + icons */}
         <div className="flex items-center justify-between">
