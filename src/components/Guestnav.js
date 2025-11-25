@@ -24,10 +24,10 @@ const SEARCH_PRODUCTS = [
 const Guestnav = () => {
   const router = useRouter();
   const [query, setQuery] = useState('');
-  const [address, setAddress] = useState(""); // Start empty for 'Select Area'
+  const [address, setAddress] = useState("");
   const [showDropdown, setShowDropdown] = useState(false);
 
-  // GSAP animated placeholder logic
+  // GSAP logic...
   const [phIndex, setPhIndex] = useState(0);
   const wordsRef = useRef([]);
   const tl = useRef();
@@ -36,15 +36,9 @@ const Guestnav = () => {
     if (query) return;
     tl.current = gsap.timeline({ repeat: -1, defaults: { duration: 0.7, ease: "power4.inOut" } });
     SEARCH_PRODUCTS.forEach((word, i) => {
-      tl.current.fromTo(
-        wordsRef.current[i],
-        { yPercent: 100, opacity: 0 },
-        {
-          yPercent: 0,
-          opacity: 1,
-          onStart: () => setPhIndex(i),
-        }
-      );
+      tl.current.fromTo(wordsRef.current[i], { yPercent: 100, opacity: 0 }, {
+        yPercent: 0, opacity: 1, onStart: () => setPhIndex(i)
+      });
       tl.current.to(wordsRef.current[i], { yPercent: -100, opacity: 0, delay: 1 }, "+=0");
     });
     return () => tl.current && tl.current.kill();
@@ -54,7 +48,7 @@ const Guestnav = () => {
     router.push('/Gwallet');
   };
 
-  // Close modal if user clicks outside the panel
+  // Only close if clicked on overlay (not modal itself)
   const handleOverlayClick = (e) => {
     if (e.target.id === "area-dropdown-overlay") setShowDropdown(false);
   };
@@ -79,34 +73,62 @@ const Guestnav = () => {
             {showDropdown && (
               <div
                 id="area-dropdown-overlay"
-                className="fixed inset-0 z-[120] flex items-center justify-center bg-black/15" // lighter overlay for mobile
+                className="fixed inset-0 z-[120] flex items-center justify-center bg-black/10"
                 onClick={handleOverlayClick}
               >
-                <div className="bg-white rounded-2xl p-6 max-w-xs w-full flex flex-col items-center">
-                  <div className="text-xl font-semibold text-center mb-6 text-amber-700">
+                <div className="bg-white rounded-2xl p-7 max-w-xs w-full flex flex-col items-center"
+                  onClick={e => e.stopPropagation()} // Prevent closing when clicking inside modal
+                >
+                  <div className="text-xl font-semibold text-center mb-8 text-amber-700">
                     Select Your Area
                   </div>
-                  <div className="grid grid-cols-2 gap-y-7 gap-x-7 w-full">
-                    {AREA_OPTIONS.map((area) => (
+                  {/* Top two rows: 2 columns each */}
+                  <div className="grid grid-cols-2 gap-y-10 gap-x-10 w-full mb-0">
+                    {AREA_OPTIONS.slice(0, 4).map((area) => (
                       <button
                         key={area.name}
                         onClick={() => { setAddress(area.name); setShowDropdown(false); }}
-                        className="flex flex-col items-center justify-center hover:bg-amber-50 rounded-2xl transition py-2 active:scale-95"
+                        className="flex flex-col items-center justify-center rounded-2xl transition py-2 active:scale-95"
+                        style={{ minWidth: '100px' }}
                       >
                         <Image
                           src={area.img}
                           alt={area.name}
-                          width={70}
-                          height={70}
+                          width={96}
+                          height={96}
                           style={{
-                            borderRadius: 14,
-                            marginBottom: 10,
+                            borderRadius: 15,
                             objectFit: 'contain',
+                            background: "#fff",
                           }}
                         />
-                        <span className="text-base font-semibold text-gray-700 text-center mt-1">{area.name}</span>
+                        <span className="text-base font-semibold text-gray-900 text-center mt-1">{area.name}</span>
                       </button>
                     ))}
+                  </div>
+                  {/* Last OU Colony row - centered */}
+                  <div className="flex justify-center w-full mt-14">
+                    <button
+                      onClick={() => { setAddress(AREA_OPTIONS[4].name); setShowDropdown(false); }}
+                      className="flex flex-col items-center justify-center rounded-2xl transition py-2 active:scale-95"
+                      style={{ minWidth: '100px' }}
+                    >
+                      <Image
+                        src={AREA_OPTIONS[4].img}
+                        alt={AREA_OPTIONS[4].name}
+                        width={96}
+                        height={96}
+                        style={{
+                          borderRadius: 15,
+                          marginBottom: 14,
+                          objectFit: 'contain',
+                          background: "#fff",
+                        }}
+                      />
+                      <span className="text-base font-semibold text-gray-900 text-center mt-1">
+                        {AREA_OPTIONS[4].name}
+                      </span>
+                    </button>
                   </div>
                 </div>
               </div>
