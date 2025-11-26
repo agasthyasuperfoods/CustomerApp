@@ -12,7 +12,7 @@ export default function PopularDeliveryPlaces() {
   return (
     <section
       className="
-        mt-6 mb-4 mx-2
+        mt-6 mb-4 mx-4
         rounded-3xl bg-white shadow-lg 
         p-4
         flex flex-col gap-2
@@ -26,7 +26,7 @@ export default function PopularDeliveryPlaces() {
         <span className="text-lg font-semibold text-gray-900">We Deliver Here</span>
         <button className="text-amber-600 text-sm font-semibold hover:underline">Show all</button>
       </div>
-      <div className="flex gap-4 overflow-x-auto no-scrollbar pt-1 pb-2">
+      <div className="flex gap-3 overflow-x-auto no-scrollbar pt-1 pb-2">
         {PLACES.map((p) => (
           <div key={p.name} className="flex flex-col items-center min-w-[75px]">
             <div

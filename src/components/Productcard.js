@@ -1,64 +1,73 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
-import { FiCalendar, FiCheckCircle } from 'react-icons/fi';
-import { LiaLeafSolid } from 'react-icons/lia';
 
-const Productcard = () => {
+const variants = [
+  { label: "500ml", price: 45 },
+  { label: "1L", price: 95 }
+];
+
+const Productcard = ({
+  product = {
+    name: "A2 Buffalo Milk",
+    oldPrice: 50,
+    discount: 5,
+    img: "/Milk.png", // <- Your milk pack image here!
+  }
+}) => {
+  const [selectedVariant, setSelectedVariant] = useState(variants[0]);
+
   return (
-    <div className="bg-gray-100 p-4 font-sans">
-      {/* Main Card */}
-      <div className="bg-stone-50 rounded-2xl p-6 shadow-sm flex flex-col md:flex-row justify-between items-center gap-6 w-full max-w-4xl mx-auto">
-        
-        {/* Left Side Content (Visually appears second on mobile) */}
-        <div className="flex flex-col space-y-4 items-start w-full order-2 md:order-1">
-          <p className="text-sm text-gray-500 font-medium">Farm to Door • Same-morning</p>
-          <h1 className="text-4xl font-extrabold text-gray-800 leading-tight">
-            Fresh Milk Delivered
-          </h1>
-          <p className="text-lg text-gray-600">
-            Pure, organic milk every morning
-          </p>
-          
-          <div className="flex flex-wrap items-center gap-4 pt-2">
-            <button className="bg-yellow-400 text-gray-900 font-bold py-3 px-8 rounded-lg shadow-md hover:bg-yellow-500 transition-colors">
-              Start Subscription
-            </button>
-            <button className="bg-white border border-gray-200 text-gray-700 font-semibold py-3 px-6 rounded-lg flex items-center gap-2 hover:bg-gray-50 transition-colors">
-              <FiCalendar className="text-gray-600" />
-              <span>Choose Slot</span>
-            </button>
+    <div className="w-full px-2 py-4">
+      <div className="bg-white rounded-2xl shadow-sm px-6 py-6 max-w-sm mx-auto flex flex-col items-center">
+        {/* Product Image at the top */}
+        <div style={{ width: 110, height: 110, position: "relative", marginBottom: 10 }}>
+          <Image
+            src={product.img}
+            alt={product.name}
+            width={110}
+            height={110}
+            style={{ objectFit: 'contain', borderRadius: 12 }}
+            priority
+          />
+        </div>
+        {/* Product Details and Actions */}
+        <div className="w-full flex flex-col items-center min-w-0">
+          {/* Name */}
+          <div className="font-extrabold text-lg text-gray-900 text-center mb-1">
+            {product.name}
           </div>
-          
-          <div className="flex flex-wrap items-center gap-3 pt-4">
-            <span className="bg-white border border-gray-200 text-gray-600 text-sm font-medium px-4 py-1.5 rounded-full">
-              ISO & HACCP Compliant
-            </span>
-            <span className="bg-white border border-gray-200 text-gray-600 text-sm font-medium px-4 py-1.5 rounded-full">
-              Farm Fresh
-            </span>
-            <span className="bg-white border border-gray-200 text-gray-600 text-sm font-medium px-4 py-1.5 rounded-full">
-              No Adulteration
-            </span>
+          {/* Price */}
+          <div className="flex gap-2 items-center justify-center mb-2">
+            <span className="text-gray-900 font-bold text-xl">&#8377;{selectedVariant.price.toFixed(2)}</span>
+            <span className="text-gray-400 font-medium line-through text-md">{`₹${product.oldPrice.toFixed(2)}`}</span>
+            <span className="text-amber-600 text-sm font-bold">{`₹${product.discount.toFixed(2)} OFF`}</span>
+          </div>
+          {/* Variant Selection */}
+          <div className="flex gap-3 mb-4 justify-center">
+            {variants.map(variant => (
+              <button
+                key={variant.label}
+                onClick={() => setSelectedVariant(variant)}
+                className={`border rounded-full px-5 py-1 text-sm font-semibold transition ${
+                  selectedVariant.label === variant.label
+                    ? 'bg-amber-100 border-amber-400 text-amber-900'
+                    : 'bg-white border-gray-300 text-gray-700'
+                }`}
+              >
+                {variant.label}
+              </button>
+            ))}
+          </div>
+          {/* Actions: ADD TO CART & SUBSCRIBE */}
+          <div className="flex w-full gap-3">
+            <button className="flex-grow bg-amber-400 hover:bg-amber-500 text-gray-900 font-bold py-3 rounded-lg shadow text-base transition">
+              ADD TO CART
+            </button>
+            <button className="border border-amber-400 text-amber-700 font-bold px-6 py-3 rounded-lg text-base bg-white transition hover:bg-amber-50 flex-shrink-0">
+              SUBSCRIBE
+            </button>
           </div>
         </div>
-        
-        {/* Right Side Image (Visually appears first on mobile) */}
-   <div style={{ width: 220, height: 220, position: "relative", margin: "0 auto" }}>
-  <Image
-    src="/Milk.png"
-    alt="Aagathya A2 Buffalo Milk Packet"
-    fill
-    sizes="(max-width: 768px) 70vw, 220px"
-    style={{ objectFit: "contain" }}
-    priority
-  />
-</div>
-
-
-      </div>
-      
-      {/* Bottom Feature Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4 w-full max-w-4xl mx-auto">
       </div>
     </div>
   );
