@@ -1,6 +1,8 @@
 import FarmFreshBanner from '@/components/FarmFreshBanner';
+import FeaturesSection from '@/components/FeaturesSection';
 import Gfooter from '@/components/Gfooter';
 import Guestnav from '@/components/Guestnav';
+import MilkPacketInfographic from '@/components/MilkPacketInfographic';
 import PopularDeliveryPlaces from '@/components/PopularDeliveryPlaces';
 import Productcard from '@/components/Productcard';
 import React from 'react';
@@ -25,6 +27,8 @@ function Guesthome() {
         </div>
         <div style={{ marginBottom: 22 }}>
           <Productcard />
+          <FeaturesSection />
+          {/* <MilkPacketInfographic /> */}
         </div>
       </div>
       <Gfooter />
