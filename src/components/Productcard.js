@@ -11,62 +11,72 @@ const Productcard = ({
     name: "A2 Buffalo Milk",
     oldPrice: 50,
     discount: 5,
-    img: "/Milk.png", // <- Your milk pack image here!
+    img: "/Milk.png" // update path as needed
   }
 }) => {
   const [selectedVariant, setSelectedVariant] = useState(variants[0]);
 
   return (
-    <div className="w-full px-2 py-4">
-      <div className="bg-white rounded-2xl shadow-sm px-6 py-6 max-w-sm mx-auto flex flex-col items-center">
-        {/* Product Image at the top */}
-        <div style={{ width: 110, height: 110, position: "relative", marginBottom: 10 }}>
+    <div className="w-full px-2 py-5">
+      <div className="bg-white rounded-2xl shadow-md px-7 py-7 mx-auto flex flex-col items-center">
+        {/* Product Image */}
+        <div style={{
+          width: 110,
+          height: 110,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          marginBottom: 20
+        }}>
           <Image
             src={product.img}
             alt={product.name}
             width={110}
             height={110}
-            style={{ objectFit: 'contain', borderRadius: 12 }}
+            style={{ objectFit: "contain" }}
             priority
           />
         </div>
-        {/* Product Details and Actions */}
-        <div className="w-full flex flex-col items-center min-w-0">
-          {/* Name */}
-          <div className="font-extrabold text-lg text-gray-900 text-center mb-1">
-            {product.name}
-          </div>
-          {/* Price */}
-          <div className="flex gap-2 items-center justify-center mb-2">
-            <span className="text-gray-900 font-bold text-xl">&#8377;{selectedVariant.price.toFixed(2)}</span>
-            <span className="text-gray-400 font-medium line-through text-md">{`₹${product.oldPrice.toFixed(2)}`}</span>
-            <span className="text-amber-600 text-sm font-bold">{`₹${product.discount.toFixed(2)} OFF`}</span>
-          </div>
-          {/* Variant Selection */}
-          <div className="flex gap-3 mb-4 justify-center">
-            {variants.map(variant => (
-              <button
-                key={variant.label}
-                onClick={() => setSelectedVariant(variant)}
-                className={`border rounded-full px-5 py-1 text-sm font-semibold transition ${
-                  selectedVariant.label === variant.label
-                    ? 'bg-amber-100 border-amber-400 text-amber-900'
-                    : 'bg-white border-gray-300 text-gray-700'
-                }`}
-              >
-                {variant.label}
-              </button>
-            ))}
-          </div>
-          {/* Actions: ADD TO CART & SUBSCRIBE */}
-          <div className="flex w-full gap-3">
-            <button className="flex-grow bg-amber-400 hover:bg-amber-500 text-gray-900 font-bold py-3 rounded-lg shadow text-base transition">
-              ADD TO CART
+        {/* Product Name */}
+        <div className="font-extrabold text-xl text-gray-900 text-center mb-2">
+          {product.name}
+        </div>
+        {/* Price Section */}
+        <div className="flex items-center justify-center gap-3 mb-2">
+          <span className="text-gray-900 font-bold text-[22px]">
+            ₹{selectedVariant.price.toFixed(2)}
+          </span>
+          <span className="text-gray-400 font-semibold line-through text-base mt-1">
+            ₹{product.oldPrice.toFixed(2)}
+          </span>
+          <span className="text-amber-600 text-base font-bold ml-1">
+            ₹{product.discount.toFixed(2)} OFF
+          </span>
+        </div>
+        {/* Variant Selection */}
+        <div className="flex gap-3 mb-5 justify-center">
+          {variants.map(variant => (
+            <button
+              key={variant.label}
+              onClick={() => setSelectedVariant(variant)}
+              className={`border rounded-full px-5 py-1 text-base font-semibold focus:outline-none transition ${
+                selectedVariant.label === variant.label
+                  ? 'bg-amber-100 border-amber-400 text-amber-900 shadow'
+                  : 'bg-white border-gray-300 text-gray-700'
+              }`}
+            >
+              {variant.label}
             </button>
-            <button className="border border-amber-400 text-amber-700 font-bold px-6 py-3 rounded-lg text-base bg-white transition hover:bg-amber-50 flex-shrink-0">
-              SUBSCRIBE
-            </button>
-          </div>
+          ))}
+        </div>
+        {/* Action Buttons */}
+        <div className="flex w-full gap-3 mb-1">
+          <button className="flex-1 bg-amber-400 hover:bg-amber-500 text-gray-900 font-bold py-3 rounded-lg shadow text-base transition">
+            ADD TO CART
+          </button>
+          <button className="flex-1 border-2 border-amber-400 text-amber-700 font-bold rounded-lg py-3 text-base bg-white transition hover:bg-amber-50">
+            SUBSCRIBE
+          </button>
         </div>
       </div>
     </div>

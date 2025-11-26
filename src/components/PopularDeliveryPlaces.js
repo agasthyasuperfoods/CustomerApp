@@ -12,13 +12,13 @@ export default function PopularDeliveryPlaces() {
   return (
     <section
       className="
-        mt-6 mb-4 mx-4
+        mt-6 mb-4 mx-2
         rounded-3xl bg-white shadow-lg 
         p-4
         flex flex-col gap-2
         "
       style={{
-        borderRadius: '26px',
+        borderRadius: '20px',
         boxShadow: '0 6px 24px 0 rgba(55,70,101,.09)',
       }}
     >
