@@ -28,7 +28,7 @@ function Guesthome() {
         <div style={{ marginBottom: 22 }}>
           <Productcard />
           <FeaturesSection />
-          {/* <MilkPacketInfographic /> */}
+          <MilkPacketInfographic />
         </div>
       </div>
       <Gfooter />
