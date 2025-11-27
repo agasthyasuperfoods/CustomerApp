@@ -116,32 +116,46 @@ export default function FeaturedProducts() {
    PREMIMUM ANIMATED CARD WITH TEXT WALL BACKGROUND
 --------------------------------------------------- */
 function AnimatedCard({ item, active, features }) {
+  // Split features into lines (chunks of 2 words)
+  const lines = [];
+  for (let i = 0; i < features.length; i += 2) {
+    lines.push(features.slice(i, i + 2).join(" • "));
+  }
+
+  // Opacity levels for premium fade
+  const opacities = ["0.09", "0.07", "0.05", "0.035", "0.02"];
+
   return (
     <motion.div
       animate={{ scale: active ? 1.05 : 1, opacity: active ? 1 : 0.95 }}
       transition={{ duration: 0.25, ease: "easeOut" }}
       className={`relative min-w-[260px] snap-center rounded-3xl p-5 shadow-md overflow-hidden ${item.bg}`}
     >
-      {/* 🔵 BACKGROUND FEATURE TEXT WALL */}
+      {/* 🔵 PREMIUM LAYERED BACKGROUND TEXT (DIFFERENT EACH LINE) */}
       <div
-        className="absolute left-0 w-full pointer-events-none select-none flex flex-col items-center text-center px-3"
+        className="absolute left-0 w-full pointer-events-none select-none flex flex-col px-3 text-left"
         style={{
-          top: "5%",        // starts higher
-          height: "60%",    // covers top area
+          top: "5%",
+          height: "60%",
           justifyContent: "flex-start",
         }}
       >
-        {features.slice(0, 8).map((t, i) => (
+        {lines.slice(0, 5).map((line, i) => (
           <p
             key={i}
-            className="text-[14px] font-extrabold uppercase tracking-wide opacity-[0.07] text-gray-900 leading-5"
+            className="text-[14px] font-extrabold uppercase tracking-wide text-gray-900 leading-5"
+            style={{
+              opacity: opacities[i], // DIFFERENT opacity per line
+              marginBottom: "4px",
+              whiteSpace: "nowrap",
+            }}
           >
-            {t}
+            {line}
           </p>
         ))}
       </div>
 
-      {/* IMAGE */}
+      {/* PRODUCT IMAGE */}
       <div className="w-full h-40 rounded-2xl overflow-hidden flex justify-center items-center relative z-20">
         <Image
           src={item.image}
