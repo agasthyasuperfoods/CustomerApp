@@ -5,6 +5,7 @@ import Guestnav from '@/components/Guestnav';
 import MilkPacketInfographic from '@/components/MilkPacketInfographic';
 import PopularDeliveryPlaces from '@/components/PopularDeliveryPlaces';
 import Productcard from '@/components/Productcard';
+import ProductSlide from '@/components/Productslide';
 import React from 'react';
 
 function Guesthome() {
@@ -26,6 +27,7 @@ function Guesthome() {
           <PopularDeliveryPlaces />
         </div>
         <div style={{ marginBottom: 22 }}>
+          <ProductSlide />
           <Productcard />
           <FeaturesSection />
           <MilkPacketInfographic />
