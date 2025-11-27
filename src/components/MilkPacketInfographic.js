@@ -46,9 +46,9 @@ export default function MilkPacketInfographic() {
         className="rounded-3xl flex flex-col items-center"
         style={{
           backgroundColor: "#4bb6ff",
-          width: 360,          // lock card width
+          width: 430,          // lock card width
           paddingTop: 24,
-          paddingBottom: 32,
+          paddingBottom: 50,
           paddingLeft: 20,
           paddingRight: 20
         }}
