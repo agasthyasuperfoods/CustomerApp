@@ -5,15 +5,15 @@ import Image from "next/image";
 import gsap from "gsap";
 
 const leftBubbles = [
-  { text: "Protein",       x: "-130px", y: "-40px" },
-  { text: "Calcium",       x: "-130px", y: "35px" },
-  { text: "Healthy Bones", x: "-115px", y: "105px" }
+  { text: "Protein",       x: -135, y: -40 },
+  { text: "Calcium",       x: -135, y: 40 },
+  { text: "Healthy Bones", x: -115, y: 120 }
 ];
 
 const rightBubbles = [
-  { text: "Minerals",      x: "130px", y: "-40px" },
-  { text: "Vitamin D",     x: "130px", y: "35px" },
-  { text: "Good Digestion",x: "115px", y: "105px" }
+  { text: "Minerals",       x: 135, y: -40 },
+  { text: "Vitamin D",      x: 135, y: 40 },
+  { text: "Good Digestion", x: 115, y: 120 }
 ];
 
 export default function MilkPacketInfographic() {
@@ -40,27 +40,44 @@ export default function MilkPacketInfographic() {
   }, []);
 
   return (
-    <div className="w-full px-2 py-4 flex justify-center">
+    <div className="w-full flex justify-center px-2 py-4">
+      {/* Fixed-width card for consistent layout across devices */}
       <div
-        className="rounded-3xl px-5 pt-6 pb-8 max-w-md w-full flex flex-col items-center"
-        style={{ backgroundColor: "#4bb6ff" }}
+        className="rounded-3xl flex flex-col items-center"
+        style={{
+          backgroundColor: "#4bb6ff",
+          width: 360,          // lock card width
+          paddingTop: 24,
+          paddingBottom: 32,
+          paddingLeft: 20,
+          paddingRight: 20
+        }}
       >
-        <h2 className="text-[22px] font-extrabold text-white">
+        <h2
+          className="font-extrabold text-white text-center"
+          style={{ fontSize: 22, lineHeight: "26px" }}
+        >
           Power in Every Glass
         </h2>
-        <p className="mt-2 mb-4 text-[13px] text-white/90 text-center leading-snug">
+        <p
+          className="text-white/90 text-center mt-2 mb-4"
+          style={{ fontSize: 13, lineHeight: "18px" }}
+        >
           Naturally rich in protein, minerals and calcium to support strong
           bones, better digestion and everyday energy.
         </p>
 
-        <div className="relative w-full flex items-center justify-center">
-          {/* Center image (on top of everything) */}
+        <div
+          className="relative flex items-center justify-center"
+          style={{ width: "100%", height: 260 }}
+        >
+          {/* Center image */}
           <div ref={imageRef} className="z-20">
             <Image
               src="/arms.png"
               alt="Agasthya A2 Buffalo Milk"
-              width={250}
-              height={250}
+              width={240}
+              height={240}
               className="object-contain select-none"
               draggable={false}
               priority
@@ -72,16 +89,18 @@ export default function MilkPacketInfographic() {
             <div
               key={b.text}
               ref={(el) => (bubbleRefs.current[i] = el)}
-              className="absolute flex items-center justify-center z-10"
+              className="absolute z-10 flex items-center justify-center"
               style={{
-                left: `calc(50% + ${b.x})`,
-                top:  `calc(50% + ${b.y})`,
+                left: `calc(50% + ${b.x}px)`,
+                top: `calc(50% + ${b.y}px)`,
                 transform: "translate(-50%, -50%)"
               }}
             >
               <button
-                className="px-4 py-1.5 rounded-full text-[11px] font-semibold whitespace-nowrap shadow-[0_4px_12px_rgba(0,0,0,0.18)]"
+                className="rounded-full font-semibold whitespace-nowrap shadow-[0_4px_12px_rgba(0,0,0,0.18)]"
                 style={{
+                  padding: "6px 16px",
+                  fontSize: 11,
                   backgroundColor: "rgb(47, 192, 245)",
                   color: "rgb(255, 255, 255)"
                 }}
@@ -95,17 +114,21 @@ export default function MilkPacketInfographic() {
           {rightBubbles.map((b, idx) => (
             <div
               key={b.text}
-              ref={(el) => (bubbleRefs.current[leftBubbles.length + idx] = el)}
-              className="absolute flex items-center justify-center z-10"
+              ref={(el) =>
+                (bubbleRefs.current[leftBubbles.length + idx] = el)
+              }
+              className="absolute z-10 flex items-center justify-center"
               style={{
-                left: `calc(50% + ${b.x})`,
-                top:  `calc(50% + ${b.y})`,
+                left: `calc(50% + ${b.x}px)`,
+                top: `calc(50% + ${b.y}px)`,
                 transform: "translate(-50%, -50%)"
               }}
             >
               <button
-                className="px-4 py-1.5 rounded-full text-[11px] font-semibold whitespace-nowrap shadow-[0_4px_12px_rgba(0,0,0,0.18)]"
+                className="rounded-full font-semibold whitespace-nowrap shadow-[0_4px_12px_rgba(0,0,0,0.18)]"
                 style={{
+                  padding: "6px 16px",
+                  fontSize: 11,
                   backgroundColor: "rgb(47, 192, 245)",
                   color: "rgb(255, 255, 255)"
                 }}
