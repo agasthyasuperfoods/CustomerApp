@@ -4,18 +4,21 @@ import { useEffect, useRef } from "react";
 import Image from "next/image";
 import gsap from "gsap";
 
-/* Re-mapped bubbles for the wider image */
+/* Clouds around the pack: top, sides, bottom */
 const bubbles = [
-  // LEFT SIDE
-  { text: "Protein",         x: -160, y: -60 },
-  { text: "Calcium",         x: -175, y: 20 },
-  { text: "Healthy Bones",   x: -150, y: 110 },
+  // TOP LEFT / TOP RIGHT
+  { text: "Protein",        x: -120, y: -120, w: 140, h: 70 },
+  { text: "Minerals",       x:  120, y: -120, w: 140, h: 70 },
 
-  // RIGHT SIDE
-  { text: "Minerals",        x: 160,  y: -60 },
-  { text: "Vitamin D",       x: 175,  y: 20 },
-  { text: "Good Digestion",  x: 150,  y: 110 }
+  // MID LEFT / MID RIGHT
+  { text: "Calcium",        x: -170, y:  -20, w: 150, h: 72 },
+  { text: "Vitamin D",      x:  170, y:  -20, w: 150, h: 72 },
+
+  // BOTTOM LEFT / BOTTOM RIGHT – wider clouds
+  { text: "Healthy Bones",  x: -120, y: 110, w: 210, h: 100 },
+  { text: "Good Digestion", x:  120, y: 110, w: 240, h: 100 }
 ];
+
 
 export default function MilkPacketInfographic() {
   const imageRef = useRef(null);
@@ -36,51 +39,48 @@ export default function MilkPacketInfographic() {
       { opacity: 1, y: 0, duration: 0.35, stagger: 0.06 },
       "-=0.15"
     );
+
+    return () => tl.kill();
   }, []);
 
   return (
-    <div className="mx-2 rounded-xl shadow-lg overflow-hidden  ">
+    <div className="mx-2 rounded-xl shadow-lg overflow-hidden">
       <div
-        className="rounded-2xl flex flex-col items-center"
+        className="flex flex-col items-center"
         style={{
-          backgroundColor: "#4bb6ff",
-          width: 430,
-          paddingTop: 50,
-          paddingBottom: 90,
+          backgroundColor: "#c7ecff",
+          paddingTop: 32,
+          paddingBottom: 40,
           paddingLeft: 20,
           paddingRight: 20
         }}
       >
-        {/* Heading */}
-        <h2
-          className="font-extrabold text-white text-center"
-          style={{ fontSize: 20, lineHeight: "24px" }}
+        <h1
+          className="font-extrabold text-center"
+          style={{ fontSize: 35, lineHeight: "26px", color: "#1670aa" }}
         >
           Power in Every Glass
-        </h2>
+        </h1>
 
         <p
-          className="text-white/90 text-center mt-1 mb-2"
-          style={{ fontSize: 12.5, lineHeight: "17px" }}
+          className="text-center mt-2 mb-6"
+          style={{ fontSize: 13, lineHeight: "18px", color: "#1670aa" }}
         >
-          Rich in protein, minerals and calcium to support strong bones and better digestion.
+          Rich in protein, minerals and calcium to support strong bones and
+          better digestion.
         </p>
 
-        {/* Main content area */}
+        {/* Center area */}
         <div
-          className="relative flex items-center justify-center mx-2 pt-20"
-        
+          className="relative flex items-center justify-center"
+          style={{ width: 420, maxWidth: "100%", height: 340 }}
         >
-          {/* Center Image shifted downward */}
-          <div
-            ref={imageRef}
-            className="z-20"
-   
-          >
+          {/* Center pack */}
+          <div ref={imageRef} className="z-20">
             <Image
               src="/milkarm.png"
-              alt="Agasthya A2 Buffalo Milk "
-              width={300}
+              alt="Agasthya A2 Buffalo Milk"
+              width={260}
               height={260}
               className="object-contain select-none"
               draggable={false}
@@ -88,7 +88,7 @@ export default function MilkPacketInfographic() {
             />
           </div>
 
-          {/* Bubbles */}
+          {/* Clouds all around */}
           {bubbles.map((b, i) => (
             <div
               key={b.text}
@@ -100,17 +100,24 @@ export default function MilkPacketInfographic() {
                 transform: "translate(-50%, -50%)"
               }}
             >
-              <button
-                className="rounded-full font-semibold whitespace-nowrap shadow-[0_4px_12px_rgba(0,0,0,0.18)] transition-all"
-                style={{
-                  padding: "6px 16px",
-                  fontSize: 11,
-                  backgroundColor: "rgb(47, 192, 245)",
-                  color: "white"
-                }}
+              <div
+                className="relative flex items-center justify-center"
+                style={{ width: b.w, height: b.h }}
               >
-                {b.text}
-              </button>
+                <Image
+                  src="/cloud.svg"   // your single cloud SVG with transparent bg
+                  alt=""
+                  fill
+                  className="object-contain select-none"
+                  draggable={false}
+                />
+                <span
+                  className="absolute px-3 text-center font-semibold"
+                  style={{ fontSize: 11, color: "#1670aa" }}
+                >
+                  {b.text}
+                </span>
+              </div>
             </div>
           ))}
         </div>
