@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import Image from "next/image";
 
 export default function FeaturedProducts() {
   const items = [
@@ -40,7 +41,7 @@ export default function FeaturedProducts() {
   return (
     <div className="w-full mt-5 px-3">
       <h2 className="text-[17px] font-semibold text-gray-900">
-        Featured on Agasthya
+        Order now and receive it by tomorrow morning 7 AM!
       </h2>
 
       <div className="flex gap-3 overflow-x-auto mt-3 pb-2 no-scrollbar">
@@ -50,14 +51,17 @@ export default function FeaturedProducts() {
           return (
             <div
               key={item.id}
-              className={`min-w-[165px] w-[165px] rounded-3xl p-3 shadow-sm ${item.bg}`}
+              className={`min-w-[180px] w-[180px] rounded-3xl p-3 shadow-sm ${item.bg}`}
             >
               {/* Image */}
               <div className="w-full h-24 rounded-xl overflow-hidden flex justify-center items-center">
-                <img
+                <Image
                   src={item.image}
-                  className="w-full h-full object-contain"
                   alt={item.title}
+                  width={200}
+                  height={200}
+                  className="object-contain w-full h-full"
+                  priority
                 />
               </div>
 
@@ -69,13 +73,9 @@ export default function FeaturedProducts() {
               {/* Price Section */}
               <div className="mt-2">
                 <div className="flex items-center gap-2">
-                  <p className="text-[15px] font-bold text-gray-900">
-                    ₹{item.price}
-                  </p>
+                  <p className="text-[15px] font-bold text-gray-900">₹{item.price}</p>
 
-                  <p className="text-[11px] text-gray-500 line-through">
-                    ₹{item.mrp}
-                  </p>
+                  <p className="text-[11px] text-gray-500 line-through">₹{item.mrp}</p>
 
                   <p className="text-[11px] text-green-600 font-semibold">
                     {discount}% OFF
