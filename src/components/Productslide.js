@@ -8,8 +8,8 @@ export default function FeaturedProducts() {
   const scrollRef = useRef(null);
   const [activeIndex, setActiveIndex] = useState(null);
 
-  // FULL FEATURE LIST
-  const FEATURE_TEXT = [
+  // FULL FEATURE LIST FOR MILK
+  const FEATURE_TEXT_MILK = [
     "RAW A2 BUFFALO MILK",
     "CHILLED AT 4°C",
     "NO ADULTERATION",
@@ -22,6 +22,20 @@ export default function FeaturedProducts() {
     "100% PURE MILK",
   ];
 
+  // FULL FEATURE LIST FOR EGGS
+  const FEATURE_TEXT_EGGS = [
+    "FARM FRESH EGGS",
+    "FREE-RANGE HENS",
+    "NO ANTIBIOTICS",
+    "NO HORMONE BOOSTERS",
+    "HAND PICKED DAILY",
+    "HIGH PROTEIN",
+    "OMEGA-3 RICH",
+    "NATURAL FEED",
+    "CLEAN & HYGIENIC",
+    "DIRECT FROM FARM",
+  ];
+
   const items = [
     {
       id: 1,
@@ -31,7 +45,7 @@ export default function FeaturedProducts() {
       image: "/Milk.png",
       tag: "Fresh Daily",
       bg: "bg-gradient-to-b from-blue-50 to-blue-100",
-      features: FEATURE_TEXT,
+      features: FEATURE_TEXT_MILK,
     },
     {
       id: 2,
@@ -41,7 +55,7 @@ export default function FeaturedProducts() {
       image: "/eggs.png",
       tag: "Organic",
       bg: "bg-gradient-to-b from-orange-50 to-orange-100",
-      features: ["FARM FRESH", "ORGANIC EGGS", "NO CHEMICAL FEED", "DAILY COLLECTED"],
+      features: FEATURE_TEXT_EGGS,
     },
     {
       id: 3,
@@ -51,7 +65,7 @@ export default function FeaturedProducts() {
       image: "/half.png",
       tag: "Best Seller",
       bg: "bg-gradient-to-b from-blue-50 to-blue-100",
-      features: FEATURE_TEXT,
+      features: FEATURE_TEXT_MILK,
     },
   ];
 
@@ -113,17 +127,17 @@ export default function FeaturedProducts() {
 }
 
 /* --------------------------------------------------
-   PREMIMUM ANIMATED CARD WITH TEXT WALL BACKGROUND
+   PREMIUM ANIMATED CARD WITH TEXT WALL BACKGROUND
 --------------------------------------------------- */
 function AnimatedCard({ item, active, features }) {
-  // Split features into lines (chunks of 2 words)
+  // Break features into pairs → each row gets different text
   const lines = [];
   for (let i = 0; i < features.length; i += 2) {
     lines.push(features.slice(i, i + 2).join(" • "));
   }
 
-  // Opacity levels for premium fade
-  const opacities = ["0.09", "0.07", "0.05", "0.035", "0.02"];
+  // Opacity levels (TOP MORE VISIBLE → BOTTOM FAINT)
+  const opacities = ["0.18", "0.10", "0.07", "0.045", "0.03"];
 
   return (
     <motion.div
@@ -131,7 +145,7 @@ function AnimatedCard({ item, active, features }) {
       transition={{ duration: 0.25, ease: "easeOut" }}
       className={`relative min-w-[260px] snap-center rounded-3xl p-5 shadow-md overflow-hidden ${item.bg}`}
     >
-      {/* 🔵 PREMIUM LAYERED BACKGROUND TEXT (DIFFERENT EACH LINE) */}
+      {/* 🔵 LAYERED BACKGROUND TEXT */}
       <div
         className="absolute left-0 w-full pointer-events-none select-none flex flex-col px-3 text-left"
         style={{
@@ -145,7 +159,7 @@ function AnimatedCard({ item, active, features }) {
             key={i}
             className="text-[14px] font-extrabold uppercase tracking-wide text-gray-900 leading-5"
             style={{
-              opacity: opacities[i], // DIFFERENT opacity per line
+              opacity: opacities[i],
               marginBottom: "4px",
               whiteSpace: "nowrap",
             }}
