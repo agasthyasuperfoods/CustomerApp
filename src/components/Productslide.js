@@ -5,17 +5,9 @@ import Image from "next/image";
 
 export default function FeaturedProducts() {
   const items = [
+  
     {
       id: 1,
-      title: "A2 Buffalo Milk - 500ml",
-      price: 45,
-      mrp: 55,
-      image: "/half.png",
-      tag: "Best Seller",
-      bg: "bg-gradient-to-b from-blue-50 to-blue-100",
-    },
-    {
-      id: 2,
       title: "A2 Buffalo Milk - 1 Litre",
       price: 88,
       mrp: 105,
@@ -24,13 +16,21 @@ export default function FeaturedProducts() {
       bg: "bg-gradient-to-b from-blue-50 to-blue-100",
     },
     {
-      id: 3,
+      id: 2,
       title: "Farm Fresh Eggs (6 pcs)",
       price: 60,
       mrp: 75,
       image: "/eggs.png",
       tag: "Organic",
       bg: "bg-gradient-to-b from-orange-50 to-orange-100",
+    },  {
+      id: 3,
+      title: "A2 Buffalo Milk - 500ml",
+      price: 45,
+      mrp: 55,
+      image: "/half.png",
+      tag: "Best Seller",
+      bg: "bg-gradient-to-b from-blue-50 to-blue-100",
     },
   ];
 
