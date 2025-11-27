@@ -15,7 +15,7 @@ function Glogin() {
       }}
     >
       <Image
-        src="/logo.png"
+        src="/Logo.png"
         alt="App Logo"
         width={160}
         height={160}
