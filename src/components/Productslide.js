@@ -18,7 +18,7 @@ export default function FeaturedProducts() {
       title: "A2 Buffalo Milk - 1 Litre",
       price: 88,
       mrp: 105,
-      image: "/milk.png",
+      image: "/Milk.png",
       tag: "Fresh Daily",
       bg: "bg-gradient-to-b from-blue-50 to-blue-100",
     },
