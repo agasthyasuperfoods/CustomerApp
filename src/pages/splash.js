@@ -50,7 +50,7 @@ export default function Splash() {
         }}
       >
         <Image
-          src="/logo.png"
+          src="/Logo.png"
           alt="Agasthya Logo"
           width={160}
           height={110}
