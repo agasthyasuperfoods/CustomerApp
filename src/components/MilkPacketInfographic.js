@@ -79,7 +79,7 @@ export default function MilkPacketInfographic() {
           >
             <Image
               src="/milkarm.png"
-              alt="Agasthya A2 Buffalo Milk"
+              alt="Agasthya A2 Buffalo Milk "
               width={300}
               height={260}
               className="object-contain select-none"
