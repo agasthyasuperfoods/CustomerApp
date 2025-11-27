@@ -43,7 +43,7 @@ export default function MilkPacketInfographic() {
     <div className="w-full flex justify-center px-2 py-4">
       {/* Fixed-width card for consistent layout across devices */}
       <div
-        className="rounded-3xl flex flex-col items-center"
+        className="rounded-2xl flex flex-col items-center"
         style={{
           backgroundColor: "#4bb6ff",
           width: 430,          // lock card width
