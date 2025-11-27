@@ -11,7 +11,7 @@ export default function AgasthyaFeatures() {
       {/* Header Section with Padding */}
       <div className="text-center mb-6 px-6 pt-6">
         <h2 className="text-xl font-bold text-gray-900 mb-3">
-          We are bringing <span className={ACCENT_COLOR_CLASS}>Raw & Creamy</span> back
+          We are bringing <span className={ACCENT_COLOR_CLASS}>Raw & Creamy Milk</span> back
         </h2>
         <p className="text-gray-500 text-xs leading-relaxed max-w-sm mx-auto">
           Better health begins with real, unprocessed food. We ensure Agasthya Nutro Milk is delivered thick, sweet, and exactly as nature intended.
