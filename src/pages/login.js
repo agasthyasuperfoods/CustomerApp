@@ -60,7 +60,7 @@ export default function Login() {
         <div className="flex flex-col items-center justify-center mb-6">
           <div style={{ width: 120, height: 120, position: "relative", margin: "0 auto 16px auto" }}>
             <Image
-              src="/Logo.png"
+              src="/logo.jpeg"
               alt="Agasthya Nutro Milk"
               fill
               style={{ objectFit: 'contain' }}

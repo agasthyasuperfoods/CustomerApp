@@ -23,7 +23,7 @@ const Header = () => {
           {/* FIXED: Replaced <a> with <Link> and <img> with <Image> */}
           <Link href="/">
             <Image 
-              src="/Logo.png" 
+              src="/logo.jpeg" 
               alt="Agasthya Logo" 
               width={100} // Added required width
               height={48} 
