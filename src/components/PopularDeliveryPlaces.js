@@ -92,9 +92,7 @@ export default function PopularDeliveryPlaces() {
                 alt={p.name}
                 width={IMG}
                 height={IMG}
-                onLoadingComplete={() =>
-                  setLoadedImages((prev) => ({ ...prev, [index]: true }))
-                }
+           
                 className="object-cover rounded-[22px]"
               />
             </div>
