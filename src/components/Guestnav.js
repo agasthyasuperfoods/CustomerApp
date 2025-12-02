@@ -1,8 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useRouter } from 'next/router';
 import Image from 'next/image';
-import { FiSearch, FiMapPin, FiShoppingCart, FiCreditCard } from 'react-icons/fi';
+import { FiSearch, FiMapPin, FiShoppingCart } from 'react-icons/fi';
 import gsap from "gsap";
+import { LuWallet } from "react-icons/lu";
 
 const AREA_OPTIONS = [
   { name: "Narsing",       img: "/narsingi.png" },
@@ -279,7 +280,7 @@ const Guestnav = () => {
               className="text-slate-600 hover:text-amber-500 transition-colors"
               onClick={handleGoToWallet}
             >
-              <FiCreditCard size={23} />
+              <LuWallet size={23} />
             </button>
             <button
               className="text-slate-600 hover:text-amber-500 transition-colors"
