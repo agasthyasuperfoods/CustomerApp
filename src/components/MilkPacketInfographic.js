@@ -4,21 +4,17 @@ import { useEffect, useRef } from "react";
 import Image from "next/image";
 import gsap from "gsap";
 
-/* Clouds around the pack: top, sides, bottom */
+/* 100% RESPONSIVE CLOUD POSITIONS */
 const bubbles = [
-  // TOP LEFT / TOP RIGHT
-  { text: "Protein",        x: -120, y: -120, w: 140, h: 70 },
-  { text: "Minerals",       x:  120, y: -120, w: 140, h: 70 },
+  { text: "Protein",        left: "20%", top: "10%",  w: 110, h: 60 },
+  { text: "Minerals",       left: "80%", top: "10%",  w: 110, h: 60 },
 
-  // MID LEFT / MID RIGHT
-  { text: "Calcium",        x: -170, y:  -20, w: 150, h: 72 },
-  { text: "Vitamin D",      x:  170, y:  -20, w: 150, h: 72 },
+  { text: "Calcium",        left: "10%", top: "45%",  w: 135, h: 70 },
+  { text: "Vitamin D",      left: "90%", top: "45%",  w: 135, h: 70 },
 
-  // BOTTOM LEFT / BOTTOM RIGHT – wider clouds
-  { text: "Healthy Bones",  x: -120, y: 110, w: 210, h: 100 },
-  { text: "Good Digestion", x:  120, y: 110, w: 240, h: 100 }
+  { text: "Healthy Bones",  left: "22%", top: "82%",  w: 180, h: 85 },
+  { text: "Good Digestion", left: "78%", top: "82%",  w: 190, h: 85 }
 ];
-
 
 export default function MilkPacketInfographic() {
   const imageRef = useRef(null);
@@ -29,15 +25,15 @@ export default function MilkPacketInfographic() {
 
     tl.fromTo(
       imageRef.current,
-      { opacity: 0, scale: 0.9, y: 10 },
+      { opacity: 0, scale: 0.85, y: 15 },
       { opacity: 1, scale: 1, y: 0, duration: 0.45 }
     );
 
     tl.fromTo(
       bubbleRefs.current,
-      { opacity: 0, y: 8 },
-      { opacity: 1, y: 0, duration: 0.35, stagger: 0.06 },
-      "-=0.15"
+      { opacity: 0, y: 10 },
+      { opacity: 1, y: 0, duration: 0.35, stagger: 0.08 },
+      "-=0.2"
     );
 
     return () => tl.kill();
@@ -51,13 +47,13 @@ export default function MilkPacketInfographic() {
           backgroundColor: "#c7ecff",
           paddingTop: 32,
           paddingBottom: 40,
-          paddingLeft: 20,
-          paddingRight: 20
+          paddingLeft: 16,
+          paddingRight: 16
         }}
       >
         <h1
           className="font-extrabold text-center"
-          style={{ fontSize: 35, lineHeight: "26px", color: "#1670aa" }}
+          style={{ fontSize: 30, lineHeight: "32px", color: "#1670aa" }}
         >
           Power in Every Glass
         </h1>
@@ -70,34 +66,37 @@ export default function MilkPacketInfographic() {
           better digestion.
         </p>
 
-        {/* Center area */}
+        {/* CENTER AREA - RESPONSIVE */}
         <div
           className="relative flex items-center justify-center"
-          style={{ width: 420, maxWidth: "100%", height: 340 }}
+          style={{
+            width: "100%",
+            maxWidth: 420,
+            height: 350,
+          }}
         >
-          {/* Center pack */}
+          {/* MILK PACK */}
           <div ref={imageRef} className="z-20">
             <Image
               src="/milkarm.png"
               alt="Agasthya A2 Buffalo Milk"
-              width={260}
-              height={260}
+              width={250}
+              height={250}
               className="object-contain select-none"
               draggable={false}
-              priority
             />
           </div>
 
-          {/* Clouds all around */}
+          {/* CLOUD BUBBLES */}
           {bubbles.map((b, i) => (
             <div
               key={b.text}
               ref={(el) => (bubbleRefs.current[i] = el)}
               className="absolute z-10 flex items-center justify-center"
               style={{
-                left: `calc(50% + ${b.x}px)`,
-                top: `calc(50% + ${b.y}px)`,
-                transform: "translate(-50%, -50%)"
+                left: b.left,
+                top: b.top,
+                transform: "translate(-50%, -50%)",
               }}
             >
               <div
@@ -105,14 +104,14 @@ export default function MilkPacketInfographic() {
                 style={{ width: b.w, height: b.h }}
               >
                 <Image
-                  src="/cloud.svg"   // your single cloud SVG with transparent bg
+                  src="/cloud.svg"
                   alt=""
                   fill
                   className="object-contain select-none"
                   draggable={false}
                 />
                 <span
-                  className="absolute px-3 text-center font-semibold"
+                  className="absolute text-center font-semibold"
                   style={{ fontSize: 11, color: "#1670aa" }}
                 >
                   {b.text}
