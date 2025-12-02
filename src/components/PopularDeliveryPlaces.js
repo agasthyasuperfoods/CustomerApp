@@ -15,31 +15,22 @@ const PLACES = [
 
 export default function PopularDeliveryPlaces() {
   const scrollContainerRef = useRef(null);
-
   const [loadedImages, setLoadedImages] = useState({});
 
-  // NEW sizes
-  const IMG = 90;        // increased from 62 → 90
-  const CARD = 110;      // min-width for card
-  const GAP = 16;        // bigger spacing
+  const IMG = 90;
+  const CARD = 110;
+  const GAP = 16;
 
-  // Scroll exactly 1 new sized item
   const scrollRight = () => {
-    if (scrollContainerRef.current) {
-      scrollContainerRef.current.scrollBy({
-        left: CARD + GAP,
-        behavior: "smooth",
-      });
-    }
+    scrollContainerRef.current?.scrollBy({
+      left: CARD + GAP,
+      behavior: "smooth",
+    });
   };
 
   return (
     <section
-      className="
-        mt-5 mb-5 mx-2
-        rounded-2xl bg-white shadow-lg 
-        p-4 flex flex-col gap-3
-      "
+      className="mt-5 mb-5 mx-2 rounded-2xl bg-white shadow-lg p-4 flex flex-col gap-3"
       style={{ boxShadow: "0 4px 12px rgba(55,70,101,.08)" }}
     >
       <div className="flex items-center justify-between px-1">
@@ -53,7 +44,6 @@ export default function PopularDeliveryPlaces() {
         </button>
       </div>
 
-      {/* Scroll row */}
       <div
         ref={scrollContainerRef}
         className="flex overflow-x-auto no-scrollbar pt-1 pb-2"
@@ -64,16 +54,10 @@ export default function PopularDeliveryPlaces() {
             className="flex flex-col items-center"
             style={{ minWidth: CARD }}
           >
-            {/* Image container */}
             <div
               className="overflow-hidden shadow-sm bg-slate-100 relative"
-              style={{
-                width: IMG,
-                height: IMG,
-                borderRadius: "22px",
-              }}
+              style={{ width: IMG, height: IMG, borderRadius: "22px" }}
             >
-              {/* Skeleton */}
               {!loadedImages[index] && (
                 <Skeleton
                   variant="rounded"
@@ -92,19 +76,15 @@ export default function PopularDeliveryPlaces() {
                 alt={p.name}
                 width={IMG}
                 height={IMG}
-           
                 className="object-cover rounded-[22px]"
+                onLoad={() =>
+                  setLoadedImages((prev) => ({ ...prev, [index]: true }))
+                }
               />
             </div>
 
-            {/* Text skeleton */}
             {!loadedImages[index] ? (
-              <Skeleton
-                variant="text"
-                width={70}
-                height={22}
-                sx={{ mt: 1 }}
-              />
+              <Skeleton variant="text" width={70} height={22} sx={{ mt: 1 }} />
             ) : (
               <span className="mt-2 text-sm font-semibold text-gray-800 text-center">
                 {p.name}
