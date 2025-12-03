@@ -27,8 +27,9 @@ function Guesthome() {
           <PopularDeliveryPlaces />
         </div>
         <div style={{ marginBottom: 22 }}>
-          <ProductSlide />
-          <Productcard />
+       
+                 <Productcard />
+   <ProductSlide />
           <FeaturesSection />
           <MilkPacketInfographic />
         </div>

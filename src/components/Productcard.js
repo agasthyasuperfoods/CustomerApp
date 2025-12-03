@@ -1,89 +1,115 @@
-import React, { useState } from "react";
+"use client";
+
+import React from "react";
 import Image from "next/image";
 
-const variants = [
-  { label: "500ml", price: 45.0 },
-  { label: "1L", price: 95.0 },
-];
-
-const Productcard = ({
-  product = {
-    name: "A2 Buffalo Milk",
-    oldPrice: 50.0,
-    discount: 5.0,
-    img: "/Milk.png",
-  },
-}) => {
-  const [selectedVariant, setSelectedVariant] = useState(variants[0]);
-
-  const currentPrice = selectedVariant.price;
-  const oldPriceDisplay = product.oldPrice;
-  const discountDisplay = product.discount;
-
+export default function MilkBanner() {
   return (
-    <div className="w-full px-2 py-5">
-      <div className="bg-white rounded-2xl shadow-lg px-7 py-7 mx-auto flex flex-col items-center">
+    <div className="w-full px-4 py-4">
+      <div
+        className="relative w-full rounded-2xl p-6 overflow-hidden shadow-md"
+        style={{ backgroundColor: "#F9D66A" }}
+      >
+        {/* Decorative Splashes */}
+        <div className="absolute left-0 top-0 w-24 h-24 bg-white/40 rounded-br-[80%]"></div>
+        <div className="absolute bottom-0 right-0 w-28 h-20 bg-white/30 rounded-tl-[90%]"></div>
 
-        {/* Product Image */}
-        <div className="w-[110px] h-[110px] flex items-center justify-center mb-5">
-          <Image
-            src={product.img}
-            alt={product.name}
-            width={110}
-            height={110}
-            sizes="110px"
-            priority
-            className="object-contain"
-          />
-        </div>
+        {/* HEADING */}
+        <h1 className="text-3xl font-extrabold text-gray-900 relative z-10">
+          A2 Buffalo Milk
+        </h1>
 
-        {/* Product Name */}
-        <div className="font-extrabold text-xl text-gray-900 text-center mb-2">
-          {product.name}
-        </div>
+        {/* SUBTITLE */}
+        <p className="text-gray-800 font-semibold text-sm relative z-10 mt-2">
+          100% Raw · Natural · Pure
+        </p>
 
-        {/* Price Section */}
-        <div className="flex items-center justify-center gap-3 mb-2">
-          <span className="text-gray-900 font-bold text-[22px]">
-            ₹{currentPrice.toFixed(2)}
-          </span>
-          <span className="text-gray-400 font-semibold line-through text-base mt-1">
-            ₹{oldPriceDisplay.toFixed(2)}
-          </span>
-          <span className="text-amber-600 text-base font-bold ml-1">
-            ₹{discountDisplay.toFixed(2)} OFF
-          </span>
-        </div>
+        {/* BULLETS + IMAGE SECTION */}
+        <div className="flex items-start justify-between relative z-10 mt-3">
 
-        {/* Variants */}
-        <div className="flex gap-3 mb-5 justify-center">
-          {variants.map((variant) => (
-            <button
-              key={variant.label}
-              onClick={() => setSelectedVariant(variant)}
-              className={`border rounded-full px-5 py-1 text-base font-semibold transition ${
-                selectedVariant.label === variant.label
-                  ? "bg-amber-100 border-amber-400 text-amber-900 shadow-sm"
-                  : "bg-white border-gray-300 text-gray-700 hover:border-amber-200"
-              }`}
+          {/* BULLETS */}
+          <div className="flex flex-col gap-1 text-sm text-gray-900 font-medium min-w-[180px]">
+            {["Raw Buffalo Milk", "No Preservatives", "No Adulteration", "Farm-Fresh Daily"].map(
+              (item, i) => (
+                <p key={i} className="flex items-center gap-2 whitespace-nowrap">
+                  <span className="w-2 h-2 bg-white rounded-full"></span>
+                  {item}
+                </p>
+              )
+            )}
+          </div>
+
+          {/* IMAGE + STATIC DOODLES */}
+          <div className="relative w-[150px] h-[180px] sm:w-[200px] sm:h-[220px] flex-shrink-0 overflow-visible">
+
+            {/* DOODLE 1 — CURVED LINE */}
+            <svg
+              className="absolute -top-4 -left-6 w-12 h-12 text-[#c47b0a] opacity-90"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
             >
-              {variant.label}
-            </button>
-          ))}
-        </div>
+              <path d="M2 10 Q20 -2 38 10" />
+            </svg>
 
-        {/* Actions */}
-        <div className="flex w-full gap-3 mb-1">
-          <button className="flex-1 bg-amber-400 hover:bg-amber-500 text-gray-900 font-bold py-3 rounded-lg shadow text-base transition">
-            ADD TO CART
-          </button>
-          <button className="flex-1 border-2 border-amber-400 text-amber-700 font-bold rounded-lg py-3 text-base bg-white hover:bg-amber-50 transition">
-            SUBSCRIBE
-          </button>
+            {/* DOODLE 2 — STAR */}
+            <svg
+              className="absolute top-2 -right-3 w-7 h-7 text-[#c47b0a] opacity-90"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
+              <path d="M12 2 L12 22 M2 12 L22 12" />
+            </svg>
+
+            {/* DOODLE 3 — SMALL CURVE */}
+            <svg
+              className="absolute bottom-4 -left-5 w-10 h-10 text-[#c47b0a] opacity-90"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
+              <path d="M2 10 Q14 4 26 12" />
+            </svg>
+
+            {/* DOODLE 4 — CIRCLE */}
+            <svg
+              className="absolute bottom-10 -right-4 w-10 h-10 text-[#c47b0a] opacity-90"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
+              <circle cx="12" cy="12" r="6" />
+            </svg>
+
+            {/* DOODLE 5 — DOT CLUSTER */}
+            <svg
+              className="absolute top-10 -right-10 w-12 h-12 text-[#c47b0a] opacity-80"
+              fill="currentColor"
+            >
+              <circle cx="4" cy="4" r="2" />
+              <circle cx="12" cy="6" r="2" />
+              <circle cx="8" cy="12" r="2" />
+              <circle cx="16" cy="14" r="2" />
+            </svg>
+
+            {/* STATIC IMAGE */}
+            <Image
+              src="/Milk.png"
+              alt="A2 Buffalo Milk"
+              fill
+              className="object-contain drop-shadow-xl"
+              priority
+            />
+          </div>
         </div>
       </div>
+
+      {/* FULL WIDTH BUTTON */}
+      <button className="mt-4 w-full bg-[#d35400] hover:bg-[#b84300] text-white font-semibold px-5 py-3 rounded-xl shadow-md transition">
+        Subscribe Now
+      </button>
     </div>
   );
-};
-
-export default Productcard;
+}
