@@ -1,11 +1,10 @@
 "use client";
 
 import React, { useState } from "react";
-import { HiArrowLeft } from "react-icons/hi";
 import { motion } from "framer-motion";
 import { LuMilk } from "react-icons/lu";
 import { useRouter } from "next/navigation";
-
+import { IoChevronBack } from "react-icons/io5";
 
 const plansData = [
   {
@@ -52,8 +51,8 @@ const router = useRouter();
   onClick={() => router.push("/Guesthome")}
   className="flex items-center gap-1 text-gray-800 text-[17px]"
 >
-          <HiArrowLeft className="w-5 h-5" />
-          <span>Back</span>
+          <IoChevronBack className="w-5 h-5" />
+         
         </button>
       </div>
 
@@ -156,9 +155,13 @@ const router = useRouter();
 
       {/* FOOTER BUTTON */}
       <div className="fixed bottom-0 left-0 w-full bg-white border-t border-gray-200 py-4 px-5 shadow-lg">
-        <button className="w-full bg-yellow-400 text-white font-semibold py-4 rounded-2xl text-lg shadow-md active:scale-95 transition">
-          Continue
-        </button>
+      <button
+  onClick={() => router.push("/loginonly")}
+  className="w-full bg-yellow-400 text-white font-semibold py-4 rounded-2xl text-lg shadow-md active:scale-95 transition"
+>
+  Continue
+</button>
+
       </div>
     </div>
   );

@@ -6,7 +6,7 @@ import Image from "next/image";
 import { IoChevronBack } from "react-icons/io5";
 import { RxCross2 } from "react-icons/rx";
 
-export default function Login() {
+export default function Loginonly() {
   const router = useRouter();
 
   const [step, setStep] = useState("phone");
@@ -17,24 +17,31 @@ export default function Login() {
 
   const otpRefs = [useRef(), useRef(), useRef(), useRef()];
 
-  /* -------------------- TOP BAR -------------------- */
-  const cancelFlow = () => router.push("/Guesthome");
+  /* -------------------- TOP BAR ACTIONS -------------------- */
+
+  const cancelFlow = () => {
+    router.push("/Guesthome");
+  };
+
   const goBack = () => {
     if (step === "otp") setStep("phone");
     else if (step === "name") setStep("otp");
   };
 
   /* -------------------- PHONE → OTP -------------------- */
+
   const handlePhoneContinue = (e) => {
     e.preventDefault();
-    if (phone.length !== 10) setError("Please enter a valid 10-digit number");
-    else {
+    if (phone.length !== 10) {
+      setError("Please enter a valid 10-digit number");
+    } else {
       setError("");
       setStep("otp");
     }
   };
 
-  /* -------------------- OTP -------------------- */
+  /* -------------------- OTP AUTO SUBMIT -------------------- */
+
   const handleChangeOtp = (i, val) => {
     if (!/^\d?$/.test(val)) return;
 
@@ -43,6 +50,12 @@ export default function Login() {
     setOtp(nextOtp);
 
     if (val && i < 3) otpRefs[i + 1].current?.focus();
+
+    if (nextOtp.every((d) => d !== "")) {
+      setTimeout(() => {
+        setStep("name");
+      }, 200);
+    }
   };
 
   const handleKeyDownOtp = (i, e) => {
@@ -51,16 +64,8 @@ export default function Login() {
     }
   };
 
-  const handleOtpContinue = (e) => {
-    e.preventDefault();
-    if (otp.some((v) => v === "")) setError("Enter all 4 digits");
-    else {
-      setError("");
-      setStep("name");
-    }
-  };
+  /* -------------------- NAME → HOME -------------------- */
 
-  /* -------------------- NAME -------------------- */
   const handleNameContinue = (e) => {
     e.preventDefault();
     if (!name.trim() || name.trim().length < 2) {
@@ -70,35 +75,36 @@ export default function Login() {
     }
   };
 
-  /* -------------------- CONTINUE AS GUEST -------------------- */
-  const handleGuestContinue = () => router.push("/Guesthome");
-
   /* ============================================================
-     UI
+     UI STARTS
   ============================================================ */
 
   return (
     <div className="min-h-screen w-full flex flex-col items-center bg-white">
 
       {/* ---------- TOP BAR ---------- */}
-      <div className="w-full max-w-[410px] flex justify-between items-center px-4 py-6 fixed top-0">
+      <div className="w-full max-w-[410px] flex justify-between items-center px-4 py-6 fixed top-0 ">
 
         {/* Back Icon */}
         {step !== "phone" ? (
           <button onClick={goBack} className="text-gray-700 text-2xl">
-            <IoChevronBack />
+           <IoChevronBack />
+
           </button>
         ) : (
-          <div className="w-6" />
+          <div className="w-6"></div>
         )}
 
-        {/* Cancel Cross */}
-        <button onClick={cancelFlow} className="text-xl font-semibold">
-          <RxCross2 />
+        {/* Cancel */}
+        <button
+          onClick={cancelFlow}
+          className=" text-xl font-semibold"
+        >
+<RxCross2 />
         </button>
       </div>
 
-      {/* ---------- MAIN CONTENT BOX ---------- */}
+      {/* ---------- MAIN CONTENT WRAPPER ---------- */}
       <div
         style={{
           marginTop: 80,
@@ -127,12 +133,13 @@ export default function Login() {
             />
           </div>
 
-          {/* Login/Register only on phone step */}
+          {/* Login/Register ONLY on first screen */}
           {step === "phone" && (
             <>
               <h1 className="text-[25px] font-bold text-center text-gray-800 mb-2">
                 Login / Register
               </h1>
+
               <p className="text-center text-gray-600 mb-2">
                 Enter your mobile number to continue
               </p>
@@ -140,9 +147,9 @@ export default function Login() {
           )}
         </div>
 
-        {/* ============================================================= */}
-        {/*                          PHONE SCREEN                         */}
-        {/* ============================================================= */}
+        {/* ================================================================ */}
+        {/*                          PHONE SCREEN                           */}
+        {/* ================================================================ */}
         {step === "phone" && (
           <div className="flex flex-col items-center">
             {error && (
@@ -151,12 +158,9 @@ export default function Login() {
               </div>
             )}
 
-            <form
-              onSubmit={handlePhoneContinue}
-              className="w-full flex flex-col gap-4"
-            >
+            <form onSubmit={handlePhoneContinue} className="w-full flex flex-col gap-4">
               <div className="flex w-full">
-                <span className="bg-[#FFF3CD] text-base font-bold px-4 py-3 rounded-l-xl border border-gray-300 flex items-center text-gray-900">
+                <span className="bg-[#FFF3CD] text-base font-bold px-4 py-3 rounded-l-xl border border-gray-300 flex items-center select-none text-gray-900">
                   🇮🇳 +91
                 </span>
 
@@ -164,7 +168,7 @@ export default function Login() {
                   type="tel"
                   placeholder="Mobile number"
                   maxLength="10"
-                  className="flex-1 px-4 py-3 bg-white border border-gray-300 rounded-r-xl outline-none text-black"
+                  className="flex-1 px-4 py-3 bg-white border border-gray-300 rounded-r-xl text-base outline-none text-black"
                   value={phone}
                   onChange={(e) =>
                     setPhone(e.target.value.replace(/\D/g, ""))
@@ -174,36 +178,21 @@ export default function Login() {
 
               <button
                 type="submit"
-                className="w-full bg-yellow-400 text-gray-900 font-bold py-3 rounded-lg hover:bg-yellow-500 transition"
+                className="w-full bg-yellow-400 text-gray-900 font-bold py-3 px-8 rounded-lg hover:bg-yellow-500 transition"
               >
-                Continue
+                Get OTP
               </button>
             </form>
-
-            {/* OR SEPARATOR */}
-            <div className="w-full text-center my-6 text-xs text-gray-400 flex items-center">
-              <span className="flex-1 border-t border-slate-200"></span>
-              <span className="mx-2">OR</span>
-              <span className="flex-1 border-t border-slate-200"></span>
-            </div>
-
-            {/* Continue as Guest */}
-            <button
-              onClick={handleGuestContinue}
-              className="w-full bg-white border border-gray-300 rounded-xl font-bold text-gray-800 text-base py-3"
-            >
-              Continue as Guest
-            </button>
           </div>
         )}
 
-        {/* ============================================================= */}
-        {/*                         OTP SCREEN                            */}
-        {/* ============================================================= */}
+        {/* ================================================================ */}
+        {/*                          OTP SCREEN                              */}
+        {/* ================================================================ */}
         {step === "otp" && (
           <div className="flex flex-col items-center">
 
-            {/* OTP ICON */}
+            {/* OTP Icon */}
             <div className="mb-3 mt-1">
               <svg width="54" height="54" viewBox="0 0 60 60" fill="none">
                 <rect
@@ -230,56 +219,46 @@ export default function Login() {
               Enter the 4-digit OTP sent to <b>XXXXXX{phone.slice(-4)}</b>
             </p>
 
-            {/* OTP BOXES */}
-            <form onSubmit={handleOtpContinue} className="flex flex-col items-center w-full">
-              <div className="flex justify-center gap-3 mb-4">
-                {otp.map((val, i) => (
-                  <input
-                    key={i}
-                    type="text"
-                    maxLength="1"
-                    inputMode="numeric"
-                    ref={otpRefs[i]}
-                    className="border border-gray-300 bg-white text-center rounded-lg w-12 h-12 text-2xl font-bold text-black focus:border-yellow-400 outline-none"
-                    value={val}
-                    onChange={(e) =>
-                      handleChangeOtp(i, e.target.value)
-                    }
-                    onKeyDown={(e) =>
-                      handleKeyDownOtp(i, e)
-                    }
-                  />
-                ))}
-              </div>
+            {/* OTP Input Boxes */}
+            <div className="flex justify-center gap-3 mb-4">
+              {otp.map((val, i) => (
+                <input
+                  key={i}
+                  type="text"
+                  inputMode="numeric"
+                  maxLength="1"
+                  ref={otpRefs[i]}
+                  className="border border-gray-300 bg-white text-center rounded-lg w-12 h-12 text-2xl font-bold text-black focus:border-yellow-400 outline-none"
+                  value={val}
+                  onChange={(e) => handleChangeOtp(i, e.target.value)}
+                  onKeyDown={(e) => handleKeyDownOtp(i, e)}
+                />
+              ))}
+            </div>
 
-              {error && (
-                <div className="mb-3 px-3 py-1 bg-red-50 text-red-600 rounded text-xs w-full text-center">
-                  {error}
-                </div>
-              )}
-
-              <button
-                type="submit"
-                className="w-full bg-yellow-400 text-gray-900 font-bold py-3 rounded-lg hover:bg-yellow-500 transition"
-              >
-                Verify OTP
-              </button>
-            </form>
+            {/* NEW Verify OTP Button */}
+            <button
+              onClick={() => setStep("name")}
+              className="w-full bg-yellow-400 text-gray-900 font-bold py-3 rounded-lg hover:bg-yellow-500 transition mb-4"
+            >
+              Verify OTP
+            </button>
 
             <button
               onClick={() => setStep("phone")}
-              className="text-yellow-400 font-bold text-xs mt-4"
+              className="text-yellow-400 font-bold text-xs mt-2"
             >
               Change Number
             </button>
           </div>
         )}
 
-        {/* ============================================================= */}
-        {/*                        NAME SCREEN                             */}
-        {/* ============================================================= */}
+        {/* ================================================================ */}
+        {/*                          NAME SCREEN                             */}
+        {/* ================================================================ */}
         {step === "name" && (
           <div className="flex flex-col items-center">
+
             <h1 className="text-[20px] font-bold text-gray-800 mb-2">
               What’s your name?
             </h1>
@@ -307,17 +286,22 @@ export default function Login() {
                 type="submit"
                 className="w-full bg-yellow-400 text-gray-900 font-bold py-3 rounded-lg hover:bg-yellow-500 transition mt-5"
               >
-                Continue
+               Continue
               </button>
             </form>
           </div>
         )}
 
-        {/* Terms Footer */}
+        {/* ---------------- Terms Footer ---------------- */}
         <div className="mt-4 text-center text-xs text-gray-400">
           By continuing, you agree to our{" "}
-          <a href="/terms" className="text-yellow-400 font-medium">Terms</a> |{" "}
-          <a href="/privacy" className="text-yellow-400 font-medium">Privacy</a>
+          <a href="/terms" className="text-yellow-400 font-medium">
+            Terms
+          </a>{" "}
+          |{" "}
+          <a href="/privacy" className="text-yellow-400 font-medium">
+            Privacy
+          </a>
         </div>
       </div>
     </div>
