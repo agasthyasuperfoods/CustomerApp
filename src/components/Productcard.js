@@ -2,8 +2,11 @@
 
 import React from "react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 export default function MilkBanner() {
+  const router = useRouter();
+
   return (
     <div className="w-full px-4 py-4">
       <div
@@ -39,10 +42,10 @@ export default function MilkBanner() {
             )}
           </div>
 
-          {/* IMAGE + STATIC DOODLES */}
+          {/* IMAGE + DOODLES */}
           <div className="relative w-[150px] h-[180px] sm:w-[200px] sm:h-[220px] flex-shrink-0 overflow-visible">
 
-            {/* DOODLE 1 — CURVED LINE */}
+            {/* DOODLE 1 */}
             <svg
               className="absolute -top-4 -left-6 w-12 h-12 text-[#c47b0a] opacity-90"
               fill="none"
@@ -53,7 +56,7 @@ export default function MilkBanner() {
               <path d="M2 10 Q20 -2 38 10" />
             </svg>
 
-            {/* DOODLE 2 — STAR */}
+            {/* DOODLE 2 */}
             <svg
               className="absolute top-2 -right-3 w-7 h-7 text-[#c47b0a] opacity-90"
               fill="none"
@@ -63,7 +66,7 @@ export default function MilkBanner() {
               <path d="M12 2 L12 22 M2 12 L22 12" />
             </svg>
 
-            {/* DOODLE 3 — SMALL CURVE */}
+            {/* DOODLE 3 */}
             <svg
               className="absolute bottom-4 -left-5 w-10 h-10 text-[#c47b0a] opacity-90"
               fill="none"
@@ -73,7 +76,7 @@ export default function MilkBanner() {
               <path d="M2 10 Q14 4 26 12" />
             </svg>
 
-            {/* DOODLE 4 — CIRCLE */}
+            {/* DOODLE 4 */}
             <svg
               className="absolute bottom-10 -right-4 w-10 h-10 text-[#c47b0a] opacity-90"
               fill="none"
@@ -83,7 +86,7 @@ export default function MilkBanner() {
               <circle cx="12" cy="12" r="6" />
             </svg>
 
-            {/* DOODLE 5 — DOT CLUSTER */}
+            {/* DOODLE 5 */}
             <svg
               className="absolute top-10 -right-10 w-12 h-12 text-[#c47b0a] opacity-80"
               fill="currentColor"
@@ -107,7 +110,10 @@ export default function MilkBanner() {
       </div>
 
       {/* FULL WIDTH BUTTON */}
-      <button className="mt-4 w-full bg-[#d35400] hover:bg-[#b84300] text-white font-semibold px-5 py-3 rounded-xl shadow-md transition">
+      <button
+        onClick={() => router.push("/Gsubscription")}
+        className="mt-4 w-full bg-yellow-400 text-white font-semibold px-5 py-3 rounded-xl shadow-md transition"
+      >
         Subscribe Now
       </button>
     </div>
