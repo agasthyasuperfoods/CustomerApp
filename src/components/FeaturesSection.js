@@ -6,7 +6,7 @@ export default function AgasthyaFeatures() {
     const ACCENT_COLOR_CLASS = "text-amber-500"; 
     
   return (
-    <div className="mx-2 bg-white rounded-xl shadow-lg mb-6">
+    <div className="mx-2 bg-white rounded-xl mt-6 shadow-lg mb-6">
       
       {/* Header Section with Padding */}
       <div className="text-center mb-6 px-6 pt-6">

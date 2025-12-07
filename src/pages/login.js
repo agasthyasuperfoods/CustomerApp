@@ -18,7 +18,6 @@ export default function Login() {
   const otpRefs = [useRef(), useRef(), useRef(), useRef()];
 
   /* -------------------- TOP BAR -------------------- */
-  const cancelFlow = () => router.push("/Guesthome");
   const goBack = () => {
     if (step === "otp") setStep("phone");
     else if (step === "name") setStep("otp");
@@ -93,9 +92,7 @@ export default function Login() {
         )}
 
         {/* Cancel Cross */}
-        <button onClick={cancelFlow} className="text-xl font-semibold">
-          <RxCross2 />
-        </button>
+ 
       </div>
 
       {/* ---------- MAIN CONTENT BOX ---------- */}
