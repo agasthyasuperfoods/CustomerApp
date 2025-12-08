@@ -148,14 +148,24 @@ const authenticator = {
       console.error('LOGIN VERIFY: error logging challenges', e);
     }
 
-    const verification = await verifyAuthenticationResponse({
-      response: body,
-      expectedChallenge,
-      expectedOrigin: process.env.NEXT_PUBLIC_ORIGIN,
-      expectedRPID: process.env.NEXT_PUBLIC_DOMAIN,
-      // library expects the stored credential under the `credential` key
-      credential: authenticator,
-    });
+  const verification = await verifyAuthenticationResponse({
+  response: {
+    id: body.id,
+    rawId: body.rawId,
+    type: body.type,
+    response: {
+      authenticatorData: body.response.authenticatorData,
+      clientDataJSON: body.response.clientDataJSON,
+      signature: body.response.signature,
+      userHandle: body.response.userHandle || null,
+    },
+  },
+  expectedChallenge,
+  expectedOrigin: process.env.NEXT_PUBLIC_ORIGIN,
+  expectedRPID: process.env.NEXT_PUBLIC_DOMAIN,
+  credential: authenticator,
+});
+
 
     res.status(200).json({ verified: verification.verified });
   } catch (err) {
