@@ -60,9 +60,22 @@ export default async function handler(req, res) {
 
     if (!Array.isArray(user.passkeys)) user.passkeys = [];
 
-    const authenticator = user.passkeys.find(
-      pk => pk.credentialID === body.rawId || pk.credentialID === body.id
-    );
+   const authenticatorRaw = user.passkeys.find(
+  pk => pk.credentialID === body.rawId || pk.credentialID === body.id
+);
+
+if (!authenticatorRaw) {
+  console.error('LOGIN VERIFY: authenticator not found for rawId', body.rawId || body.id);
+  return res.status(400).json({ verified: false, error: 'Authenticator not found' });
+}
+
+// ✅ CRITICAL: Rehydrate publicKey into a Buffer (Redis breaks this)
+const authenticator = {
+  id: authenticatorRaw.credentialID,
+  publicKey: Buffer.from(authenticatorRaw.publicKey.data || authenticatorRaw.publicKey),
+  counter: authenticatorRaw.counter,
+};
+
 
     if (!authenticator) {
       console.error('LOGIN VERIFY: authenticator not found for rawId', body.rawId || body.id);
