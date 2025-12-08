@@ -4,17 +4,16 @@ import { useEffect, useRef } from "react";
 import Image from "next/image";
 import gsap from "gsap";
 
-/* Re-mapped bubbles for the wider image */
+/* 100% RESPONSIVE CLOUD POSITIONS */
 const bubbles = [
-  // LEFT SIDE
-  { text: "Protein",         x: -160, y: -60 },
-  { text: "Calcium",         x: -175, y: 20 },
-  { text: "Healthy Bones",   x: -150, y: 110 },
+  { text: "Protein",        left: "20%", top: "10%",  w: 110, h: 60 },
+  { text: "Minerals",       left: "80%", top: "10%",  w: 110, h: 60 },
 
-  // RIGHT SIDE
-  { text: "Minerals",        x: 160,  y: -60 },
-  { text: "Vitamin D",       x: 175,  y: 20 },
-  { text: "Good Digestion",  x: 150,  y: 110 }
+  { text: "Calcium",        left: "10%", top: "45%",  w: 135, h: 70 },
+  { text: "Vitamin D",      left: "90%", top: "45%",  w: 135, h: 70 },
+
+  { text: "Healthy Bones",  left: "22%", top: "82%",  w: 180, h: 85 },
+  { text: "Good Digestion", left: "78%", top: "82%",  w: 190, h: 85 }
 ];
 
 export default function MilkPacketInfographic() {
@@ -26,91 +25,98 @@ export default function MilkPacketInfographic() {
 
     tl.fromTo(
       imageRef.current,
-      { opacity: 0, scale: 0.9, y: 10 },
+      { opacity: 0, scale: 0.85, y: 15 },
       { opacity: 1, scale: 1, y: 0, duration: 0.45 }
     );
 
     tl.fromTo(
       bubbleRefs.current,
-      { opacity: 0, y: 8 },
-      { opacity: 1, y: 0, duration: 0.35, stagger: 0.06 },
-      "-=0.15"
+      { opacity: 0, y: 10 },
+      { opacity: 1, y: 0, duration: 0.35, stagger: 0.08 },
+      "-=0.2"
     );
+
+    return () => tl.kill();
   }, []);
 
   return (
-    <div className="mx-2 rounded-xl shadow-lg overflow-hidden  ">
+    <div className="mx-2 rounded-xl shadow-lg overflow-hidden">
       <div
-        className="rounded-2xl flex flex-col items-center"
+        className="flex flex-col items-center"
         style={{
-          backgroundColor: "#4bb6ff",
-          width: 430,
-          paddingTop: 50,
-          paddingBottom: 90,
-          paddingLeft: 20,
-          paddingRight: 20
+          backgroundColor: "#c7ecff",
+          paddingTop: 32,
+          paddingBottom: 40,
+          paddingLeft: 16,
+          paddingRight: 16
         }}
       >
-        {/* Heading */}
-        <h2
-          className="font-extrabold text-white text-center"
-          style={{ fontSize: 20, lineHeight: "24px" }}
+        <h1
+          className="font-extrabold text-center"
+          style={{ fontSize: 30, lineHeight: "32px", color: "#1670aa" }}
         >
           Power in Every Glass
-        </h2>
+        </h1>
 
         <p
-          className="text-white/90 text-center mt-1 mb-2"
-          style={{ fontSize: 12.5, lineHeight: "17px" }}
+          className="text-center mt-2 mb-6"
+          style={{ fontSize: 13, lineHeight: "18px", color: "#1670aa" }}
         >
-          Rich in protein, minerals and calcium to support strong bones and better digestion.
+          Rich in protein, minerals and calcium to support strong bones and
+          better digestion.
         </p>
 
-        {/* Main content area */}
+        {/* CENTER AREA - RESPONSIVE */}
         <div
-          className="relative flex items-center justify-center mx-2 pt-20"
-        
+          className="relative flex items-center justify-center"
+          style={{
+            width: "100%",
+            maxWidth: 420,
+            height: 350,
+          }}
         >
-          {/* Center Image shifted downward */}
-          <div
-            ref={imageRef}
-            className="z-20"
-   
-          >
+          {/* MILK PACK */}
+          <div ref={imageRef} className="z-20">
             <Image
               src="/milkarm.png"
-              alt="Agasthya A2 Buffalo Milk "
-              width={300}
-              height={260}
+              alt="Agasthya A2 Buffalo Milk"
+              width={250}
+              height={250}
               className="object-contain select-none"
               draggable={false}
-              priority
             />
           </div>
 
-          {/* Bubbles */}
+          {/* CLOUD BUBBLES */}
           {bubbles.map((b, i) => (
             <div
               key={b.text}
               ref={(el) => (bubbleRefs.current[i] = el)}
               className="absolute z-10 flex items-center justify-center"
               style={{
-                left: `calc(50% + ${b.x}px)`,
-                top: `calc(50% + ${b.y}px)`,
-                transform: "translate(-50%, -50%)"
+                left: b.left,
+                top: b.top,
+                transform: "translate(-50%, -50%)",
               }}
             >
-              <button
-                className="rounded-full font-semibold whitespace-nowrap shadow-[0_4px_12px_rgba(0,0,0,0.18)] transition-all"
-                style={{
-                  padding: "6px 16px",
-                  fontSize: 11,
-                  backgroundColor: "rgb(47, 192, 245)",
-                  color: "white"
-                }}
+              <div
+                className="relative flex items-center justify-center"
+                style={{ width: b.w, height: b.h }}
               >
-                {b.text}
-              </button>
+                <Image
+                  src="/cloud.svg"
+                  alt=""
+                  fill
+                  className="object-contain select-none"
+                  draggable={false}
+                />
+                <span
+                  className="absolute text-center font-semibold"
+                  style={{ fontSize: 11, color: "#1670aa" }}
+                >
+                  {b.text}
+                </span>
+              </div>
             </div>
           ))}
         </div>

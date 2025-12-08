@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import Link from 'next/link'; // Import Link
 import Image from 'next/image'; // Import Image
+import { LuWallet } from "react-icons/lu";
 
 // --- SVG Icon Components ---
-const HeartIcon = () => ( <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" ><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" /></svg>);
 const CartIcon = () => ( <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="8" cy="21" r="1" /><circle cx="19" cy="21" r="1" /><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.16" /></svg>);
 const SearchIcon = () => (<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" /></svg>);
 
@@ -23,7 +23,7 @@ const Header = () => {
           {/* FIXED: Replaced <a> with <Link> and <img> with <Image> */}
           <Link href="/">
             <Image 
-              src="/Logo.png" 
+              src="/logo.jpeg" 
               alt="Agasthya Logo" 
               width={100} // Added required width
               height={48} 
@@ -35,7 +35,8 @@ const Header = () => {
           
           <div className="flex items-center space-x-5">
             <button className="text-slate-600 hover:text-amber-500 transition-colors">
-              <HeartIcon />
+<LuWallet />
+
             </button>
             <button className="relative text-slate-600 hover:text-amber-500 transition-colors">
               <CartIcon />

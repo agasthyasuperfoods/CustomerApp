@@ -15,11 +15,11 @@ export default function FarmFreshBanner() {
       }}
     >
       <Image
-        src="/mainbanner.png" 
+        src="/banner.webp" 
         alt="Agasthya Farm Fresh Products Banner"
         width={890}
         height={368}
-        layout="responsive"
+        className="object-cover"  
         style={{ display: 'block',borderRadius:"20px", width: "100%", height: "auto" }}
         priority
       />

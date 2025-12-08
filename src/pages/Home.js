@@ -8,7 +8,7 @@ import Productcard from '@/components/Productcard';
 import ProductSlide from '@/components/Productslide';
 import React from 'react';
 
-function Guesthome() {
+function Home() {
   return (
     <div
       style={{
@@ -39,4 +39,4 @@ function Guesthome() {
   );
 }
 
-export default Guesthome;
+export default Home;
