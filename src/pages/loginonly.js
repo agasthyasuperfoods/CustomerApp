@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { TbFaceId } from "react-icons/tb";
 import { RxCross2 } from "react-icons/rx";
+import Swal from "sweetalert2";
 
 /* ================= BASE64 HELPERS ================= */
 
@@ -19,24 +20,11 @@ function base64urlToUint8Array(base64urlString) {
     .replace(/_/g, "/");
 
   const rawData = window.atob(base64);
-  const outputArray = new Uint8Array(rawData.length);
-
-  for (let i = 0; i < rawData.length; ++i) {
-    outputArray[i] = rawData.charCodeAt(i);
-  }
-
-  return outputArray;
+  return Uint8Array.from(rawData, (c) => c.charCodeAt(0));
 }
 
 function bufferToBase64URLString(buffer) {
-  const bytes = new Uint8Array(buffer);
-  let binary = "";
-  for (let i = 0; i < bytes.byteLength; i++) {
-    binary += String.fromCharCode(bytes[i]);
-  }
-
-  return window
-    .btoa(binary)
+  return btoa(String.fromCharCode(...new Uint8Array(buffer)))
     .replace(/\+/g, "-")
     .replace(/\//g, "_")
     .replace(/=/g, "");
@@ -46,82 +34,22 @@ function bufferToBase64URLString(buffer) {
 
 export default function Loginonly() {
   const router = useRouter();
-
   const [phone, setPhone] = useState("");
-  const [error, setError] = useState("");
 
-  /* ✅ FACE ID REGISTER */
-  const registerFaceId = async () => {
+  /* ✅ SINGLE FACE ID FLOW (LOGIN + AUTO REGISTER) */
+  const handleFaceAuth = async () => {
     try {
       if (!phone || phone.length !== 10) {
-        alert("Enter valid mobile number first");
+        Swal.fire({
+          icon: "warning",
+          title: "Enter Mobile Number",
+          text: "Please enter your 10-digit mobile number first",
+          confirmButtonColor: "#000",
+        });
         return;
       }
 
-      const res = await fetch("/api/auth/passkey/register-challenge", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ phone }),
-      });
-
-      const options = await res.json();
-
-      options.challenge = base64urlToUint8Array(options.challenge);
-      options.user.id = base64urlToUint8Array(options.user.id);
-
-      if (options.excludeCredentials?.length) {
-        options.excludeCredentials = options.excludeCredentials.map((cred) => ({
-          ...cred,
-          id: base64urlToUint8Array(cred.id),
-        }));
-      }
-
-      const credential = await navigator.credentials.create({
-        publicKey: options,
-      });
-
-      const credentialForServer = {
-        id: credential.id,
-        rawId: bufferToBase64URLString(credential.rawId),
-        type: credential.type,
-        response: {
-          attestationObject: bufferToBase64URLString(
-            credential.response.attestationObject
-          ),
-          clientDataJSON: bufferToBase64URLString(
-            credential.response.clientDataJSON
-          ),
-        },
-        phone,
-      };
-
-      const verify = await fetch("/api/auth/passkey/register-verify", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(credentialForServer),
-      });
-
-      const result = await verify.json();
-
-      if (result.verified) {
-        router.push("/Home");
-      } else {
-        alert("❌ Face ID Registration Failed");
-      }
-    } catch (err) {
-      console.error("❌ REGISTER ERROR:", err);
-      alert("❌ Face ID Error");
-    }
-  };
-
-  /* ✅ FACE ID LOGIN */
-  const handleFaceLockTest = async () => {
-    try {
-      if (!phone || phone.length !== 10) {
-        alert("Enter valid mobile number first");
-        return;
-      }
-
+      /* ✅ TRY LOGIN FIRST */
       const res = await fetch("/api/auth/passkey/login-challenge", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -130,25 +58,67 @@ export default function Loginonly() {
 
       const options = await res.json();
 
+      /* ✅ IF USER NOT REGISTERED → AUTO REGISTER */
       if (options.error) {
-        alert("No Face ID registered");
+        const regRes = await fetch("/api/auth/passkey/register-challenge", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ phone }),
+        });
+
+        const regOptions = await regRes.json();
+
+        regOptions.challenge = base64urlToUint8Array(regOptions.challenge);
+        regOptions.user.id = base64urlToUint8Array(regOptions.user.id);
+
+        const credential = await navigator.credentials.create({
+          publicKey: regOptions,
+        });
+
+        const regPayload = {
+          id: credential.id,
+          rawId: bufferToBase64URLString(credential.rawId),
+          type: credential.type,
+          response: {
+            attestationObject: bufferToBase64URLString(
+              credential.response.attestationObject
+            ),
+            clientDataJSON: bufferToBase64URLString(
+              credential.response.clientDataJSON
+            ),
+          },
+          phone,
+        };
+
+        const verifyReg = await fetch("/api/auth/passkey/register-verify", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(regPayload),
+        });
+
+        const regResult = await verifyReg.json();
+
+        if (regResult.verified) {
+          localStorage.setItem("agasthyaUser", phone);
+          router.push("/Home");
+        } else {
+          Swal.fire("Error", "Face ID Registration Failed", "error");
+        }
         return;
       }
 
+      /* ✅ LOGIN FLOW */
       options.challenge = base64urlToUint8Array(options.challenge);
-
-      if (options.allowCredentials) {
-        options.allowCredentials = options.allowCredentials.map((cred) => ({
-          ...cred,
-          id: base64urlToUint8Array(cred.id),
-        }));
-      }
+      options.allowCredentials = options.allowCredentials?.map((cred) => ({
+        ...cred,
+        id: base64urlToUint8Array(cred.id),
+      }));
 
       const credential = await navigator.credentials.get({
         publicKey: options,
       });
 
-      const verifyPayload = {
+      const loginPayload = {
         id: credential.id,
         rawId: bufferToBase64URLString(credential.rawId),
         type: credential.type,
@@ -170,56 +140,53 @@ export default function Loginonly() {
       const verify = await fetch("/api/auth/passkey/login-verify", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(verifyPayload),
+        body: JSON.stringify(loginPayload),
       });
 
       const result = await verify.json();
 
       if (result.verified) {
+        localStorage.setItem("agasthyaUser", phone);
         router.push("/Home");
       } else {
-        alert("❌ Face ID Failed");
+        Swal.fire("Error", "Face ID Failed", "error");
       }
     } catch (err) {
-      console.error("LOGIN ERROR:", err);
-      alert("❌ Face ID Error");
+      console.error("FACE ID ERROR:", err);
+      Swal.fire("Error", "Something went wrong", "error");
     }
   };
 
   /* ================= UI ================= */
 
   return (
-    <div className="min-h-screen w-full flex flex-col items-center bg-white">
+    <div className="min-h-screen w-full bg-white relative flex flex-col">
 
-      {/* ✅ TOP BAR */}
-      <div className="w-full max-w-[410px] flex justify-end items-center px-4 py-5 fixed top-0 bg-white z-10">
+      {/* ✅ TOP CLOSE BUTTON */}
+      <div className="w-full flex justify-end px-6 py-5 fixed top-0 z-10 bg-white">
         <button onClick={() => router.push("/Guesthome")}>
           <RxCross2 size={20} />
         </button>
       </div>
 
-      {/* ✅ MAIN CARD */}
-      <div className="w-full max-w-[410px] mt-[100px] px-6">
-
-        {/* ✅ LOGO */}
-        <div className="flex flex-col items-center mb-6">
-          <div className="relative w-[110px] h-[110px] mb-4">
-            <Image src="/logo.jpeg" fill alt="logo" className="object-contain" />
-          </div>
-
-          <h1 className="text-[22px] font-bold text-gray-900">
-            Login / Register
-          </h1>
-          <p className="text-gray-500 text-sm mt-1 text-center">
-            Enter your mobile number to continue
-          </p>
+      {/* ✅ CENTER LOGO */}
+      <div className="flex-1 flex flex-col justify-center items-center text-center px-6">
+        <div className="relative w-[110px] h-[110px] mb-4">
+          <Image src="/logo.jpeg" fill alt="logo" className="object-contain" />
         </div>
 
-        {error && (
-          <p className="text-red-500 mb-3 text-xs text-center">{error}</p>
-        )}
+        <h1 className="text-[22px] font-bold text-gray-900">
+          Login with Face ID
+        </h1>
+        <p className="text-gray-500 text-sm mt-1">
+          Secure and instant login
+        </p>
+      </div>
 
-        {/* ✅ ROUNDED INPUT */}
+      {/* ✅ BOTTOM FIXED FORM */}
+      <div className="w-full px-6 pb-8 fixed bottom-0 bg-white">
+
+        {/* ✅ MOBILE INPUT */}
         <div className="flex items-center border border-gray-300 rounded-xl overflow-hidden bg-white mb-4">
           <span className="px-4 py-3 font-semibold bg-[#FFF3CD]">
             🇮🇳 +91
@@ -230,41 +197,26 @@ export default function Loginonly() {
             placeholder="Mobile number"
             maxLength="10"
             value={phone}
-            onChange={(e) =>
-              setPhone(e.target.value.replace(/\D/g, ""))
-            }
+            onChange={(e) => setPhone(e.target.value.replace(/\D/g, ""))}
             className="flex-1 px-4 py-3 outline-none text-black"
           />
         </div>
 
-        {/* ✅ GET OTP BUTTON */}
+        {/* ✅ FACE ID BUTTON */}
         <button
-          onClick={() =>
-            phone.length !== 10
-              ? setError("Please enter a valid 10-digit number")
-              : setError("")
-          }
-          className="w-full bg-[#FFD60A] text-black py-3 font-bold rounded-xl"
-        >
-          Get OTP
-        </button>
-
-        {/* ✅ FACE ID LOGIN BUTTON */}
-        <button
-          onClick={handleFaceLockTest}
-          className="w-full mt-4 bg-black text-white py-3 font-bold rounded-xl flex items-center justify-center gap-3"
+          onClick={handleFaceAuth}
+          className="w-full bg-black text-white py-3 font-bold rounded-xl flex items-center justify-center gap-3"
         >
           <TbFaceId size={26} />
-          <span>Unlock with Face ID</span>
+          <span>Continue with Face ID</span>
         </button>
 
-        {/* ✅ FACE ID REGISTER BUTTON */}
+        {/* ✅ CONTINUE AS GUEST */}
         <button
-          onClick={registerFaceId}
-          className="w-full mt-3 bg-white text-black py-3 font-bold rounded-xl border border-gray-300 flex items-center justify-center gap-3"
+          onClick={() => router.push("/Guesthome")}
+          className="w-full mt-3 bg-[#FFD60A] text-black py-3 font-bold rounded-xl"
         >
-          <TbFaceId size={24} />
-          <span>Enable Face ID (One Time)</span>
+          Continue as Guest
         </button>
       </div>
     </div>
