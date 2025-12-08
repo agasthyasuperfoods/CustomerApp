@@ -13,7 +13,7 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: "Phone missing" });
     }
 
-  let user = await users.get(phone);
+    let user = await users.get(phone);
 
     if (!user) {
       user = {
@@ -29,12 +29,9 @@ export default async function handler(req, res) {
 
     const userIDBuffer = new TextEncoder().encode(user.id);
 
-    // Ensure we pass a non-string userID (Uint8Array) as required by
-    // generateRegistrationOptions. Passing a string causes the helper to
-    // throw and results in the client receiving an invalid response.
     const options = await generateRegistrationOptions({
-      rpName: "Agasthya Superfoods",
-      rpID: "localhost",
+      rpName: "Agasthya Nutromilk", 
+      rpID: process.env.NEXT_PUBLIC_DOMAIN, 
       userID: userIDBuffer,
       userName: phone,
       timeout: 60000,
@@ -45,28 +42,10 @@ export default async function handler(req, res) {
       },
     });
 
-
-    // Diagnostic logs
-    try {
-      console.log('REGISTER CHALLENGE: users.size=', users.size);
-      console.log('REGISTER CHALLENGE: user before set =', JSON.parse(JSON.stringify(user)));
-    } catch (e) {
-      console.log('REGISTER CHALLENGE: could not stringify user for debug', e?.message || e);
-    }
-    console.log('REGISTER CHALLENGE: generated options.challenge=', options.challenge);
+    console.log("REGISTER CHALLENGE: generated options.challenge=", options.challenge);
 
     user.currentChallenge = options.challenge;
-
-    // persist the updated user (important for async store)
-    try {
-      await users.set(phone, user);
-    } catch (e) {
-      console.log('REGISTER CHALLENGE: failed to persist user:', e?.message || e);
-    }
-
-    try {
-      console.log('REGISTER CHALLENGE: user after set =', JSON.parse(JSON.stringify(user)));
-    } catch (e) {}
+    await users.set(phone, user);
 
     console.log("✅ GENERATED OPTIONS:", options);
 
