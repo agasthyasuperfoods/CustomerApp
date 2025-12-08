@@ -1,46 +1,48 @@
 import { verifyAuthenticationResponse } from "@simplewebauthn/server";
 import { users } from "@/lib/passkeyStore";
 
-/* ✅ FINAL SAFE BUFFER NORMALIZER (VERCEL SAFE) */
-function toBuffer(value) {
-  try {
-    if (!value) return null;
+/* ✅ FORCE ANY INPUT → BASE64URL STRING */
+function toBase64Url(value) {
+  if (!value) return null;
 
-    // ✅ Native
-    if (Buffer.isBuffer(value)) return value;
-    if (value instanceof Uint8Array) return Buffer.from(value);
-    if (value instanceof ArrayBuffer) return Buffer.from(value);
+  // Already correct
+  if (typeof value === "string") return value;
 
-    // ✅ Node { type: "Buffer", data: [...] }
-    if (typeof value === "object" && value.type === "Buffer" && Array.isArray(value.data)) {
-      return Buffer.from(value.data);
-    }
-
-    // ✅ Redis / JSON { data: [...] }
-    if (typeof value === "object" && Array.isArray(value.data)) {
-      return Buffer.from(value.data);
-    }
-
-    // ✅ base64 / base64url string
-    if (typeof value === "string") {
-      const padding = "=".repeat((4 - (value.length % 4)) % 4);
-      const base64 = (value + padding)
-        .replace(/-/g, "+")
-        .replace(/_/g, "/");
-      return Buffer.from(base64, "base64");
-    }
-
-    // ✅ LAST RESORT — stringify ANY object safely
-    return Buffer.from(JSON.stringify(value), "utf8");
-
-  } catch (e) {
-    console.error("toBuffer FAILED on value:", value);
-    return null; // ✅ NEVER crash production
+  // Buffer
+  if (Buffer.isBuffer(value)) {
+    return value
+      .toString("base64")
+      .replace(/\+/g, "-")
+      .replace(/\//g, "_")
+      .replace(/=+$/, "");
   }
+
+  // Uint8Array / ArrayBuffer
+  if (value instanceof Uint8Array || value instanceof ArrayBuffer) {
+    return Buffer.from(value)
+      .toString("base64")
+      .replace(/\+/g, "-")
+      .replace(/\//g, "_")
+      .replace(/=+$/, "");
+  }
+
+  // Redis JSON { type:'Buffer', data:[...] }
+  if (value?.type === "Buffer" && Array.isArray(value.data)) {
+    return Buffer.from(value.data)
+      .toString("base64")
+      .replace(/\+/g, "-")
+      .replace(/\//g, "_")
+      .replace(/=+$/, "");
+  }
+
+  // LAST RESORT
+  return Buffer.from(JSON.stringify(value))
+    .toString("base64")
+    .replace(/\+/g, "-")
+    .replace(/\//g, "_")
+    .replace(/=+$/, "");
 }
 
-
-/* ✅ FINAL LOGIN VERIFY */
 export default async function handler(req, res) {
   try {
     const body = req.body;
@@ -50,11 +52,14 @@ export default async function handler(req, res) {
 
     /* ✅ FALLBACK FIND USER BY CHALLENGE */
     if (!user) {
-      const clientDataBuf = toBuffer(body?.response?.clientDataJSON);
-      const parsed = JSON.parse(clientDataBuf.toString("utf8"));
-      const challenge = parsed.challenge;
+      const clientDataJSON = toBase64Url(body?.response?.clientDataJSON);
+      const parsed = JSON.parse(
+        Buffer.from(clientDataJSON.replace(/-/g, "+").replace(/_/g, "/"), "base64").toString()
+      );
 
+      const challenge = parsed.challenge;
       const keys = await users.keys();
+
       for (const k of keys) {
         const u = await users.get(k);
         if (u?.currentChallenge === challenge) {
@@ -74,20 +79,16 @@ export default async function handler(req, res) {
     );
 
     if (!authenticatorRaw) {
-      return res.status(400).json({
-        verified: false,
-        error: "Authenticator not found",
-      });
+      return res.status(400).json({ verified: false, error: "Authenticator not found" });
     }
 
-    /* ✅ RAW PUBLIC KEY BUFFER (CRITICAL) */
     const authenticator = {
       credentialID: authenticatorRaw.credentialID,
-      publicKey: toBuffer(authenticatorRaw.publicKey),
+      publicKey: authenticatorRaw.publicKey, // ✅ MUST already be base64url
       counter: authenticatorRaw.counter,
     };
 
-    /* ✅ NORMALIZE CHALLENGE */
+    /* ✅ NORMALIZE EXPECTED CHALLENGE */
     let expectedChallenge = user.currentChallenge;
     if (Buffer.isBuffer(expectedChallenge)) {
       expectedChallenge = expectedChallenge
@@ -97,18 +98,18 @@ export default async function handler(req, res) {
         .replace(/=+$/, "");
     }
 
-    /* ✅ FINAL VERIFY CALL */
+    /* ✅ ✅ ✅ FINAL VERIFY (ALL BASE64URL STRINGS) ✅ ✅ ✅ */
     const verification = await verifyAuthenticationResponse({
       response: {
         id: body.id,
         rawId: body.rawId,
         type: body.type,
         response: {
-          authenticatorData: toBuffer(body.response.authenticatorData),
-          clientDataJSON: toBuffer(body.response.clientDataJSON),
-          signature: toBuffer(body.response.signature),
+          authenticatorData: toBase64Url(body.response.authenticatorData),
+          clientDataJSON: toBase64Url(body.response.clientDataJSON),
+          signature: toBase64Url(body.response.signature),
           userHandle: body.response.userHandle
-            ? toBuffer(body.response.userHandle)
+            ? toBase64Url(body.response.userHandle)
             : null,
         },
       },
@@ -121,10 +122,7 @@ export default async function handler(req, res) {
     return res.status(200).json({ verified: verification.verified });
 
   } catch (err) {
-    console.error("❌ LOGIN VERIFY CRASH:", err);
-    return res.status(400).json({
-      verified: false,
-      error: err.message,
-    });
+    console.error("❌ LOGIN VERIFY FINAL CRASH:", err);
+    return res.status(400).json({ verified: false, error: err.message });
   }
 }
