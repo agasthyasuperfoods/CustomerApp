@@ -9,6 +9,7 @@ import Productcard from "@/components/Productcard";
 import ProductSlide from "@/components/Productslide";
 import FeaturesSection from "@/components/FeaturesSection";
 import MilkPacketInfographic from "@/components/MilkPacketInfographic";
+import SubscriptionCalendar from "@/components/SubscriptionCalendar";
 
 function Home() {
   return (
@@ -16,12 +17,17 @@ function Home() {
       style={{
         background: "#f6f7fa",
         minHeight: "100vh",
-        paddingTop: "120px",      // ✅ Space for fixed NAV
-        paddingBottom: "88px",  // ✅ Space for fixed FOOTER
+        paddingTop: "120px",   // ✅ Space for fixed NAV
+        paddingBottom: "88px"  // ✅ Space for fixed FOOTER
       }}
     >
       {/* ✅ FIXED NAV */}
       <Nav />
+
+      {/* ✅ SUBSCRIPTION CALENDAR — NOW ALWAYS VISIBLE BELOW NAV */}
+      <div style={{ maxWidth: 480, margin: "0 auto" }}>
+        <SubscriptionCalendar />
+      </div>
 
       {/* ✅ MAIN CONTENT WRAPPER */}
       <div
