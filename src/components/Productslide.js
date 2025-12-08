@@ -96,7 +96,7 @@ export default function FeaturedProducts() {
   };
 
   return (
-    <div className="w-full mt-6 px-3">
+    <div className="w-full mt-6 ">
       <div className="mt-2">
         <span className="bg-yellow-200 text-yellow-700 text-[10px] px-2 py-1 rounded-full font-medium tracking-wide">
           Early Morning Delivery
