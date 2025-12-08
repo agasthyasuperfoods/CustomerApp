@@ -19,8 +19,9 @@ export const users = {
       return global._passkeyUsers.get(phone);
     }
 
-    const data = await redis.get(`user:${phone}`);
-    return data ? JSON.parse(data) : null;
+  const data = await redis.get(`user:${phone}`);
+return data || null;
+
   },
 
   async set(phone, data) {
@@ -29,7 +30,7 @@ export const users = {
       return;
     }
 
-    await redis.set(`user:${phone}`, JSON.stringify(data));
+await redis.set(`user:${phone}`, data);
   },
 
   async keys() {
