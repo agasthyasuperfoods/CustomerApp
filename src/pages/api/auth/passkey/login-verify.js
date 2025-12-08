@@ -8,14 +8,38 @@ function toBuffer(value) {
   if (Buffer.isBuffer(value)) return value;
   if (value instanceof Uint8Array) return Buffer.from(value);
 
-  if (value?.data && Array.isArray(value.data)) {
-    return Buffer.from(value.data); // ✅ Redis broken buffer fix
+  // Handle Node's { type: 'Buffer', data: [...] } representation and
+  // other array-like .data containers
+  if (value && typeof value === "object") {
+    if (ArrayBuffer.isView(value)) {
+      // DataView / TypedArray
+      return Buffer.from(value.buffer, value.byteOffset || 0, value.byteLength || value.length);
+    }
+    if (value instanceof ArrayBuffer) {
+      return Buffer.from(value);
+    }
+    if (value.type === "Buffer" && Array.isArray(value.data)) {
+      return Buffer.from(value.data);
+    }
+    if (value.data && Array.isArray(value.data)) {
+      return Buffer.from(value.data);
+    }
   }
 
   if (typeof value === "string") {
     const padding = "=".repeat((4 - (value.length % 4)) % 4);
     const base64 = (value + padding).replace(/-/g, "+").replace(/_/g, "/");
     return Buffer.from(base64, "base64");
+  }
+
+  // As a last resort, if it's an object, stringify it and convert.
+  if (value && typeof value === "object") {
+    try {
+      const s = JSON.stringify(value);
+      return Buffer.from(s, "utf8");
+    } catch (e) {
+      // fallthrough to error
+    }
   }
 
   throw new Error("Invalid buffer input received");
