@@ -1,6 +1,8 @@
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
-import Image from 'next/image';
+"use client";
+
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 export default function Splash() {
   const router = useRouter();
@@ -8,14 +10,23 @@ export default function Splash() {
   const [zoom, setZoom] = useState(false);
 
   useEffect(() => {
-    // Start animation after mount to ensure no hydration mismatch
+    // ✅ Start zoom animation
     const timer1 = setTimeout(() => setZoom(true), 700);
 
-    // After animation, redirect user
+    // ✅ After animation → Redirect based on Face ID localStorage login
     const timer2 = setTimeout(() => {
       setShowSplash(false);
-      const isLoggedIn = typeof window !== 'undefined' && localStorage.getItem('userToken');
-      router.push(isLoggedIn ? '/home' : '/login');
+
+      const isLoggedIn =
+        typeof window !== "undefined" &&
+        localStorage.getItem("agasthyaUser"); // ✅ your real key
+
+      if (isLoggedIn) {
+        router.replace("/Home");       // ✅ Auto login
+      } else {
+        router.replace("/login");      // ✅ Face ID login screen
+        // OR → router.replace("/Guesthome");
+      }
     }, 1500);
 
     return () => {
@@ -24,29 +35,27 @@ export default function Splash() {
     };
   }, [router]);
 
-  if (!showSplash) return null; // Remove from DOM after animation
+  if (!showSplash) return null;
 
   return (
     <div
-      className={`fixed inset-0 z-50 flex items-center justify-center bg-[#ffffff] transition-opacity duration-500 ${
-        zoom ? 'opacity-0' : 'opacity-100'
+      className={`fixed inset-0 z-50 flex items-center justify-center bg-white transition-opacity duration-500 ${
+        zoom ? "opacity-0" : "opacity-100"
       }`}
-      style={{
-        overflow: 'hidden'
-      }}
+      style={{ overflow: "hidden" }}
     >
-      {/* Animated Logo */}
+      {/* ✅ Animated Logo */}
       <div
         className={`transition-transform duration-900 ease-[cubic-bezier(.4,2,.6,1)] ${
-          zoom ? 'scale-[8] opacity-80' : 'scale-100 opacity-100'
+          zoom ? "scale-[8] opacity-80" : "scale-100 opacity-100"
         }`}
         style={{
-          willChange: 'transform,opacity',
+          willChange: "transform,opacity",
           width: 160,
           height: 110,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center'
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
         }}
       >
         <Image
@@ -55,7 +64,7 @@ export default function Splash() {
           width={160}
           height={110}
           priority
-          style={{ height: 'auto', width: '100%' }}
+          style={{ height: "auto", width: "100%" }}
         />
       </div>
     </div>

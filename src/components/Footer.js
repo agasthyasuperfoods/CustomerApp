@@ -39,9 +39,9 @@ export default function Footer() {
   }, [router]);
 
   const tabs = [
-    { label: 'Home',          href: '/Guesthome',      Icon: HomeIcon },
-    { label: 'Subscription',  href: '/Gsubscription',  Icon: SubscriptionIcon },
-    { label: 'Account',       href: '/Gaccount',       Icon: AccountIcon },
+    { label: 'Home',          href: '/Home',      Icon: HomeIcon },
+    { label: 'Subscription',  href: '/Subscription',  Icon: SubscriptionIcon },
+    { label: 'Account',       href: '/Account',       Icon: AccountIcon },
   ];
 
   return (
