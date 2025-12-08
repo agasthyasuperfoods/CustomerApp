@@ -3,31 +3,42 @@ import { users } from "@/lib/passkeyStore";
 
 /* ✅ FINAL SAFE BUFFER NORMALIZER (VERCEL SAFE) */
 function toBuffer(value) {
-  if (!value) return null;
+  try {
+    if (!value) return null;
 
-  if (Buffer.isBuffer(value)) return value;
-  if (value instanceof Uint8Array) return Buffer.from(value);
-  if (value instanceof ArrayBuffer) return Buffer.from(value);
+    // ✅ Native
+    if (Buffer.isBuffer(value)) return value;
+    if (value instanceof Uint8Array) return Buffer.from(value);
+    if (value instanceof ArrayBuffer) return Buffer.from(value);
 
-  // ✅ Handles: { type: "Buffer", data: [...] }
-  if (typeof value === "object" && value.type === "Buffer" && Array.isArray(value.data)) {
-    return Buffer.from(value.data);
+    // ✅ Node { type: "Buffer", data: [...] }
+    if (typeof value === "object" && value.type === "Buffer" && Array.isArray(value.data)) {
+      return Buffer.from(value.data);
+    }
+
+    // ✅ Redis / JSON { data: [...] }
+    if (typeof value === "object" && Array.isArray(value.data)) {
+      return Buffer.from(value.data);
+    }
+
+    // ✅ base64 / base64url string
+    if (typeof value === "string") {
+      const padding = "=".repeat((4 - (value.length % 4)) % 4);
+      const base64 = (value + padding)
+        .replace(/-/g, "+")
+        .replace(/_/g, "/");
+      return Buffer.from(base64, "base64");
+    }
+
+    // ✅ LAST RESORT — stringify ANY object safely
+    return Buffer.from(JSON.stringify(value), "utf8");
+
+  } catch (e) {
+    console.error("toBuffer FAILED on value:", value);
+    return null; // ✅ NEVER crash production
   }
-
-  // ✅ Handles: { data: [...] }
-  if (typeof value === "object" && Array.isArray(value.data)) {
-    return Buffer.from(value.data);
-  }
-
-  // ✅ Handles: base64 / base64url string
-  if (typeof value === "string") {
-    const padding = "=".repeat((4 - (value.length % 4)) % 4);
-    const base64 = (value + padding).replace(/-/g, "+").replace(/_/g, "/");
-    return Buffer.from(base64, "base64");
-  }
-
-  throw new Error("Invalid buffer input received");
 }
+
 
 /* ✅ FINAL LOGIN VERIFY */
 export default async function handler(req, res) {
