@@ -1,12 +1,12 @@
 import FarmFreshBanner from '@/components/FarmFreshBanner';
 import FeaturesSection from '@/components/FeaturesSection';
-import Gfooter from '@/components/Gfooter';
-import Guestnav from '@/components/Guestnav';
+import Nav from '@/components/Nav';
 import MilkPacketInfographic from '@/components/MilkPacketInfographic';
 import PopularDeliveryPlaces from '@/components/PopularDeliveryPlaces';
 import Productcard from '@/components/Productcard';
 import ProductSlide from '@/components/Productslide';
 import React from 'react';
+import Footer from '@/components/Footer';
 
 function Home() {
   return (
@@ -17,9 +17,9 @@ function Home() {
         paddingBottom: "64px", // To prevent Gfooter overlap
       }}
     >
-      <Guestnav />
+      <Nav />
       {/* Add padding top for the fixed nav */}
-      <div style={{ maxWidth: 480, margin: "0 auto", paddingTop: 120 }}>
+      <div style={{ maxWidth: 480, margin: "0 auto"}}>
         <div style={{ marginBottom: 22 }}>
           <FarmFreshBanner />
         </div>
@@ -34,7 +34,7 @@ function Home() {
           <MilkPacketInfographic />
         </div>
       </div>
-      <Gfooter />
+      <Footer />
     </div>
   );
 }

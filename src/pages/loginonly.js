@@ -1,17 +1,15 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { IoChevronBack } from "react-icons/io5";
+import { TbFaceId } from "react-icons/tb";
 import { RxCross2 } from "react-icons/rx";
 
 /* ================= BASE64 HELPERS ================= */
 
-// Base64URL -> Uint8Array
 function base64urlToUint8Array(base64urlString) {
   if (!base64urlString || typeof base64urlString !== "string") {
-    console.error("❌ Invalid base64url string:", base64urlString);
     return new Uint8Array();
   }
 
@@ -30,7 +28,6 @@ function base64urlToUint8Array(base64urlString) {
   return outputArray;
 }
 
-// Uint8Array -> Base64URL
 function bufferToBase64URLString(buffer) {
   const bytes = new Uint8Array(buffer);
   let binary = "";
@@ -50,16 +47,10 @@ function bufferToBase64URLString(buffer) {
 export default function Loginonly() {
   const router = useRouter();
 
-  const [step, setStep] = useState("phone");
   const [phone, setPhone] = useState("");
-  const [otp, setOtp] = useState(["", "", "", ""]);
-  const [name, setName] = useState("");
   const [error, setError] = useState("");
 
-  const otpRefs = [useRef(), useRef(), useRef(), useRef()];
-
-  /* ============ ✅ FACE ID REGISTER (ONE TIME) ============ */
-
+  /* ✅ FACE ID REGISTER */
   const registerFaceId = async () => {
     try {
       if (!phone || phone.length !== 10) {
@@ -74,7 +65,6 @@ export default function Loginonly() {
       });
 
       const options = await res.json();
-      console.log("✅ REGISTER OPTIONS FROM SERVER:", options);
 
       options.challenge = base64urlToUint8Array(options.challenge);
       options.user.id = base64urlToUint8Array(options.user.id);
@@ -114,7 +104,7 @@ export default function Loginonly() {
       const result = await verify.json();
 
       if (result.verified) {
-        alert("✅ Face ID Enabled Successfully");
+        router.push("/Home");
       } else {
         alert("❌ Face ID Registration Failed");
       }
@@ -124,8 +114,7 @@ export default function Loginonly() {
     }
   };
 
-  /* ============ ✅ FACE ID LOGIN ============ */
-
+  /* ✅ FACE ID LOGIN */
   const handleFaceLockTest = async () => {
     try {
       if (!phone || phone.length !== 10) {
@@ -142,7 +131,7 @@ export default function Loginonly() {
       const options = await res.json();
 
       if (options.error) {
-        alert("No Face ID registered for this number");
+        alert("No Face ID registered");
         return;
       }
 
@@ -187,8 +176,7 @@ export default function Loginonly() {
       const result = await verify.json();
 
       if (result.verified) {
-        alert("✅ Face ID Login Success");
-        router.push("/Guesthome");
+        router.push("/Home");
       } else {
         alert("❌ Face ID Failed");
       }
@@ -198,151 +186,86 @@ export default function Loginonly() {
     }
   };
 
-  /* ================= OTHER FLOW ================= */
-
-  const cancelFlow = () => router.push("/Guesthome");
-
-  const goBack = () => {
-    if (step === "otp") setStep("phone");
-    else if (step === "name") setStep("otp");
-  };
-
-  const handlePhoneContinue = (e) => {
-    e.preventDefault();
-    if (phone.length !== 10) {
-      setError("Please enter a valid 10-digit number");
-    } else {
-      setError("");
-      setStep("otp");
-    }
-  };
-
-  const handleChangeOtp = (i, val) => {
-    if (!/^\d?$/.test(val)) return;
-    const nextOtp = [...otp];
-    nextOtp[i] = val;
-    setOtp(nextOtp);
-    if (val && i < 3) otpRefs[i + 1].current.focus();
-    if (nextOtp.every((d) => d !== "")) setStep("name");
-  };
-
-  const handleNameContinue = (e) => {
-    e.preventDefault();
-    if (!name.trim() || name.length < 2) {
-      setError("Enter valid name");
-    } else {
-      router.push("/Guesthome");
-    }
-  };
-
   /* ================= UI ================= */
 
   return (
-    <div className="min-h-screen flex flex-col items-center bg-white">
-      {/* TOP BAR */}
-      <div className="w-full max-w-[410px] flex justify-between px-4 py-5 fixed top-0 bg-white">
-        {step !== "phone" ? (
-          <button onClick={goBack}>
-            <IoChevronBack size={22} />
-          </button>
-        ) : (
-          <span />
-        )}
-        <button onClick={cancelFlow}>
+    <div className="min-h-screen w-full flex flex-col items-center bg-white">
+
+      {/* ✅ TOP BAR */}
+      <div className="w-full max-w-[410px] flex justify-end items-center px-4 py-5 fixed top-0 bg-white z-10">
+        <button onClick={() => router.push("/Guesthome")}>
           <RxCross2 size={20} />
         </button>
       </div>
 
-      {/* MAIN */}
-      <div className="mt-[90px] w-full max-w-[410px] px-6">
-        {/* LOGO */}
+      {/* ✅ MAIN CARD */}
+      <div className="w-full max-w-[410px] mt-[100px] px-6">
+
+        {/* ✅ LOGO */}
         <div className="flex flex-col items-center mb-6">
-          <div className="relative w-[120px] h-[120px] mb-4">
-            <Image src="/logo.jpeg" fill alt="logo" />
+          <div className="relative w-[110px] h-[110px] mb-4">
+            <Image src="/logo.jpeg" fill alt="logo" className="object-contain" />
           </div>
 
-          {step === "phone" && (
-            <>
-              <h1 className="text-xl font-bold">Login / Register</h1>
-              <p className="text-gray-500 text-sm">
-                Enter mobile number to continue
-              </p>
-            </>
-          )}
+          <h1 className="text-[22px] font-bold text-gray-900">
+            Login / Register
+          </h1>
+          <p className="text-gray-500 text-sm mt-1 text-center">
+            Enter your mobile number to continue
+          </p>
         </div>
 
-        {/* PHONE SCREEN */}
-        {step === "phone" && (
-          <>
-            {error && <p className="text-red-500 mb-2 text-xs">{error}</p>}
-
-            <form onSubmit={handlePhoneContinue} className="space-y-4">
-              <div className="flex">
-                <span className="bg-yellow-100 px-4 py-3 border">+91</span>
-                <input
-                  type="tel"
-                  maxLength="10"
-                  value={phone}
-                  onChange={(e) =>
-                    setPhone(e.target.value.replace(/\D/g, ""))
-                  }
-                  className="flex-1 border px-3"
-                />
-              </div>
-
-              <button className="bg-yellow-400 w-full py-3 font-bold">
-                Get OTP
-              </button>
-            </form>
-
-            <button
-              onClick={handleFaceLockTest}
-              className="w-full mt-4 bg-black text-white py-3 font-bold"
-            >
-              Unlock with Face ID
-            </button>
-
-            <button
-              onClick={registerFaceId}
-              className="w-full mt-2 border border-black py-3 font-bold"
-            >
-              Enable Face ID (One Time)
-            </button>
-          </>
+        {error && (
+          <p className="text-red-500 mb-3 text-xs text-center">{error}</p>
         )}
 
-        {/* OTP SCREEN */}
-        {step === "otp" && (
-          <div className="space-y-4">
-            <div className="flex justify-center gap-3">
-              {otp.map((v, i) => (
-                <input
-                  key={i}
-                  ref={otpRefs[i]}
-                  value={v}
-                  onChange={(e) => handleChangeOtp(i, e.target.value)}
-                  maxLength="1"
-                  className="w-10 h-10 border text-center"
-                />
-              ))}
-            </div>
-          </div>
-        )}
+        {/* ✅ ROUNDED INPUT */}
+        <div className="flex items-center border border-gray-300 rounded-xl overflow-hidden bg-white mb-4">
+          <span className="px-4 py-3 font-semibold bg-[#FFF3CD]">
+            🇮🇳 +91
+          </span>
 
-        {/* NAME SCREEN */}
-        {step === "name" && (
-          <form onSubmit={handleNameContinue} className="space-y-4">
-            <input
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              className="border w-full p-3"
-              placeholder="Enter Name"
-            />
-            <button className="bg-yellow-400 w-full py-3 font-bold">
-              Continue
-            </button>
-          </form>
-        )}
+          <input
+            type="tel"
+            placeholder="Mobile number"
+            maxLength="10"
+            value={phone}
+            onChange={(e) =>
+              setPhone(e.target.value.replace(/\D/g, ""))
+            }
+            className="flex-1 px-4 py-3 outline-none text-black"
+          />
+        </div>
+
+        {/* ✅ GET OTP BUTTON */}
+        <button
+          onClick={() =>
+            phone.length !== 10
+              ? setError("Please enter a valid 10-digit number")
+              : setError("")
+          }
+          className="w-full bg-[#FFD60A] text-black py-3 font-bold rounded-xl"
+        >
+          Get OTP
+        </button>
+
+        {/* ✅ FACE ID LOGIN BUTTON */}
+        <button
+          onClick={handleFaceLockTest}
+          className="w-full mt-4 bg-black text-white py-3 font-bold rounded-xl flex items-center justify-center gap-3"
+        >
+          <TbFaceId size={26} />
+          <span>Unlock with Face ID</span>
+        </button>
+
+        {/* ✅ FACE ID REGISTER BUTTON */}
+        <button
+          onClick={registerFaceId}
+          className="w-full mt-3 bg-white text-black py-3 font-bold rounded-xl border border-gray-300 flex items-center justify-center gap-3"
+        >
+          <TbFaceId size={24} />
+          <span>Enable Face ID (One Time)</span>
+        </button>
       </div>
     </div>
   );
