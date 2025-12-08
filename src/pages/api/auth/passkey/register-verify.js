@@ -1,20 +1,27 @@
 import { verifyRegistrationResponse } from "@simplewebauthn/server";
 import { users } from "@/lib/passkeyStore";
 
-/* -------------------- BASE64URL TO BUFFER -------------------- */
-function base64urlToBuffer(base64url) {
-  const padding = "=".repeat((4 - (base64url.length % 4)) % 4);
-  const base64 = (base64url + padding)
-    .replace(/-/g, "+")
-    .replace(/_/g, "/");
-  return Buffer.from(base64, "base64");
+/* ✅ ALWAYS RETURN BASE64URL STRING */
+function normalizeChallenge(challenge) {
+  if (!challenge) return challenge;
+
+  if (typeof challenge === "string") return challenge;
+
+  if (Buffer.isBuffer(challenge) || challenge instanceof Uint8Array) {
+    return Buffer.from(challenge)
+      .toString("base64")
+      .replace(/\+/g, "-")
+      .replace(/\//g, "_")
+      .replace(/=+$/, "");
+  }
+
+  return String(challenge);
 }
 
-/* -------------------- REGISTER VERIFY -------------------- */
 export default async function handler(req, res) {
   try {
     const { phone } = req.body;
-    let user = phone ? await users.get(phone) : null;
+    const user = await users.get(phone);
 
     if (!user || !user.currentChallenge) {
       return res.status(400).json({
@@ -23,58 +30,38 @@ export default async function handler(req, res) {
       });
     }
 
-    /* ---------- NORMALIZE EXPECTED CHALLENGE ---------- */
-    let expectedChallenge = user.currentChallenge;
-    if (Buffer.isBuffer(expectedChallenge)) {
-      expectedChallenge = expectedChallenge
-        .toString("base64")
-        .replace(/\+/g, "-")
-        .replace(/\//g, "_")
-        .replace(/=+$/, "");
-    }
+    const expectedChallenge = normalizeChallenge(user.currentChallenge);
 
-    /* ---------- VERIFY REGISTRATION ---------- */
-    let verification;
-    try {
-      verification = await verifyRegistrationResponse({
-        response: req.body,
-        expectedChallenge,
-        expectedOrigin: process.env.NEXT_PUBLIC_ORIGIN,
-        expectedRPID: process.env.NEXT_PUBLIC_DOMAIN,
-      });
-    } catch (err) {
-      console.error("❌ REGISTER VERIFY ERROR:", err);
-      return res.status(400).json({
-        verified: false,
-        error: err.message,
-      });
-    }
+    const verification = await verifyRegistrationResponse({
+      response: req.body,
+      expectedChallenge,
+      expectedOrigin: process.env.NEXT_PUBLIC_ORIGIN,
+      expectedRPID: process.env.NEXT_PUBLIC_DOMAIN,
+    });
 
-    const { verified, registrationInfo } = verification;
-
-    if (!verified || !registrationInfo) {
+    if (!verification.verified || !verification.registrationInfo) {
       return res.status(400).json({ verified: false });
     }
 
-    /* ---------- STORE RAW CBOR KEY (CRITICAL FIX) ---------- */
-    const cred = registrationInfo.credential;
+    const cred = verification.registrationInfo.credential;
 
-    if (!Array.isArray(user.passkeys)) user.passkeys = [];
+    /* ✅ ✅ ✅ RAW BUFFER STORAGE — THIS IS CORRECT ✅ ✅ ✅ */
+    user.passkeys = [
+      {
+        credentialID: cred.id,
+        publicKey: Buffer.from(cred.publicKey), // ✅ KEEP RAW BUFFER
+        counter: cred.counter,
+      },
+    ];
 
-    user.passkeys.push({
-      credentialID: cred.id,
-      publicKey: Buffer.from(cred.publicKey), // ✅ RAW BUFFER ONLY
-      counter: cred.counter,
-    });
-
+    user.currentChallenge = null;
     await users.set(phone, user);
 
-    console.log("✅ REGISTER SUCCESS:", cred.id);
-
     return res.status(200).json({ verified: true });
+
   } catch (err) {
-    console.error("❌ REGISTER CRASH:", err);
-    return res.status(400).json({
+    console.error("❌ REGISTER VERIFY FAILED:", err);
+    return res.status(500).json({
       verified: false,
       error: err.message,
     });
