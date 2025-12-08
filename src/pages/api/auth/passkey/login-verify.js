@@ -1,48 +1,20 @@
 import { verifyAuthenticationResponse } from "@simplewebauthn/server";
 import { users } from "@/lib/passkeyStore";
 
-/* -------------------- SAFE BUFFER CONVERTER -------------------- */
+/* -------------------- SAFE BUFFER NORMALIZER -------------------- */
 function toBuffer(value) {
   if (!value) return null;
-
   if (Buffer.isBuffer(value)) return value;
   if (value instanceof Uint8Array) return Buffer.from(value);
-
-  // Handle Node's { type: 'Buffer', data: [...] } representation and
-  // other array-like .data containers
-  if (value && typeof value === "object") {
-    if (ArrayBuffer.isView(value)) {
-      // DataView / TypedArray
-      return Buffer.from(value.buffer, value.byteOffset || 0, value.byteLength || value.length);
-    }
-    if (value instanceof ArrayBuffer) {
-      return Buffer.from(value);
-    }
-    if (value.type === "Buffer" && Array.isArray(value.data)) {
-      return Buffer.from(value.data);
-    }
-    if (value.data && Array.isArray(value.data)) {
-      return Buffer.from(value.data);
-    }
-  }
-
   if (typeof value === "string") {
     const padding = "=".repeat((4 - (value.length % 4)) % 4);
     const base64 = (value + padding).replace(/-/g, "+").replace(/_/g, "/");
     return Buffer.from(base64, "base64");
   }
-
-  // As a last resort, if it's an object, stringify it and convert.
-  if (value && typeof value === "object") {
-    try {
-      const s = JSON.stringify(value);
-      return Buffer.from(s, "utf8");
-    } catch (e) {
-      // fallthrough to error
-    }
+  if (value?.data && Array.isArray(value.data)) {
+    return Buffer.from(value.data);
   }
-
-  throw new Error("Invalid buffer input received");
+  throw new Error("Invalid buffer input");
 }
 
 /* -------------------- LOGIN VERIFY -------------------- */
@@ -51,32 +23,27 @@ export default async function handler(req, res) {
     const body = req.body;
     const { phone } = body;
 
-    let user = phone ? await users.get(phone) : undefined;
+    let user = phone ? await users.get(phone) : null;
 
-    /* ---------- FALLBACK FIND USER BY CHALLENGE ---------- */
+    /* ---------- FALLBACK BY CHALLENGE ---------- */
     if (!user) {
-      try {
-        const clientDataBuf = toBuffer(body?.response?.clientDataJSON);
-        const parsed = JSON.parse(clientDataBuf.toString("utf8"));
-        const clientChallenge = parsed.challenge;
+      const clientDataBuf = toBuffer(body.response.clientDataJSON);
+      const parsed = JSON.parse(clientDataBuf.toString("utf8"));
+      const challenge = parsed.challenge;
 
-        const keys = await users.keys();
-        for (const k of keys) {
-          const u = await users.get(k);
-          if (u?.currentChallenge === clientChallenge) {
-            user = u;
-            console.log("LOGIN VERIFY: found user by challenge", k);
-            break;
-          }
+      const keys = await users.keys();
+      for (const k of keys) {
+        const u = await users.get(k);
+        if (u?.currentChallenge === challenge) {
+          user = u;
+          break;
         }
-      } catch {}
+      }
     }
 
     if (!user) {
       return res.status(400).json({ verified: false, error: "User not found" });
     }
-
-    if (!Array.isArray(user.passkeys)) user.passkeys = [];
 
     /* ---------- FIND AUTHENTICATOR ---------- */
     const authenticatorRaw = user.passkeys.find(
@@ -84,19 +51,19 @@ export default async function handler(req, res) {
     );
 
     if (!authenticatorRaw) {
-      return res.status(400).json({ verified: false, error: "Authenticator not found" });
+      return res
+        .status(400)
+        .json({ verified: false, error: "Authenticator not found" });
     }
 
-    /* ---------- REHYDRATE AUTHENTICATOR (stored shape) ---------- */
-    // @simplewebauthn expects the stored credential in the form
-    // { credentialID, publicKey, counter } (publicKey can be base64url)
+    /* ---------- RAW CBOR PUBLIC KEY (CRITICAL FIX) ---------- */
     const authenticator = {
       credentialID: authenticatorRaw.credentialID,
-      publicKey: authenticatorRaw.publicKey,
+      publicKey: Buffer.from(authenticatorRaw.publicKey), // ✅ RAW BUFFER
       counter: authenticatorRaw.counter,
     };
 
-    /* ---------- GET EXPECTED CHALLENGE ---------- */
+    /* ---------- NORMALIZE EXPECTED CHALLENGE ---------- */
     let expectedChallenge = user.currentChallenge;
     if (Buffer.isBuffer(expectedChallenge)) {
       expectedChallenge = expectedChallenge
@@ -106,40 +73,40 @@ export default async function handler(req, res) {
         .replace(/=+$/, "");
     }
 
-    const clientDataBuf = toBuffer(body.response.clientDataJSON);
-    const parsedClient = JSON.parse(clientDataBuf.toString("utf8"));
-
-    console.log(
-      "LOGIN VERIFY:",
-      parsedClient.challenge,
-      " expected:",
-      expectedChallenge
-    );
-
     /* ---------- VERIFY AUTH ---------- */
-    // Pass the original base64url strings from the client. The verifier
-    // expects strings for clientDataJSON / signature / authenticatorData.
-    const verification = await verifyAuthenticationResponse({
-      response: {
-        id: body.id,
-        rawId: body.rawId,
-        type: body.type,
+    let verification;
+    try {
+      verification = await verifyAuthenticationResponse({
         response: {
-          authenticatorData: body.response.authenticatorData,
-          clientDataJSON: body.response.clientDataJSON,
-          signature: body.response.signature,
-          userHandle: body.response.userHandle || null,
+          id: body.id,
+          rawId: body.rawId,
+          type: body.type,
+          response: {
+            authenticatorData: body.response.authenticatorData,
+            clientDataJSON: body.response.clientDataJSON,
+            signature: body.response.signature,
+            userHandle: body.response.userHandle || null,
+          },
         },
-      },
-      expectedChallenge,
-      expectedOrigin: process.env.NEXT_PUBLIC_ORIGIN,
-      expectedRPID: process.env.NEXT_PUBLIC_DOMAIN,
-      credential: authenticator,
-    });
+        expectedChallenge,
+        expectedOrigin: process.env.NEXT_PUBLIC_ORIGIN,
+        expectedRPID: process.env.NEXT_PUBLIC_DOMAIN,
+        credential: authenticator,
+      });
+    } catch (err) {
+      console.error("❌ LOGIN VERIFY ERROR:", err);
+      return res.status(400).json({
+        verified: false,
+        error: err.message,
+      });
+    }
 
     return res.status(200).json({ verified: verification.verified });
   } catch (err) {
-    console.error("LOGIN VERIFY ERROR:", err);
-    return res.status(400).json({ verified: false, error: err.message });
+    console.error("❌ LOGIN VERIFY CRASH:", err);
+    return res.status(400).json({
+      verified: false,
+      error: err.message,
+    });
   }
 }
