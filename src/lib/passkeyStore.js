@@ -20,7 +20,7 @@ export const users = {
     }
 
   const data = await redis.get(`user:${phone}`);
-return data || null;
+  return data ? JSON.parse(data) : null;
 
   },
 
@@ -30,7 +30,7 @@ return data || null;
       return;
     }
 
-await redis.set(`user:${phone}`, data);
+  await redis.set(`user:${phone}`, JSON.stringify(data));
   },
 
   async keys() {

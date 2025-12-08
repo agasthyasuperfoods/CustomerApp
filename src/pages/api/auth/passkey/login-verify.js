@@ -87,10 +87,12 @@ export default async function handler(req, res) {
       return res.status(400).json({ verified: false, error: "Authenticator not found" });
     }
 
-    /* ---------- REHYDRATE AUTHENTICATOR ---------- */
+    /* ---------- REHYDRATE AUTHENTICATOR (stored shape) ---------- */
+    // @simplewebauthn expects the stored credential in the form
+    // { credentialID, publicKey, counter } (publicKey can be base64url)
     const authenticator = {
-      id: authenticatorRaw.credentialID,
-      publicKey: toBuffer(authenticatorRaw.publicKey), 
+      credentialID: authenticatorRaw.credentialID,
+      publicKey: authenticatorRaw.publicKey,
       counter: authenticatorRaw.counter,
     };
 
@@ -115,18 +117,18 @@ export default async function handler(req, res) {
     );
 
     /* ---------- VERIFY AUTH ---------- */
+    // Pass the original base64url strings from the client. The verifier
+    // expects strings for clientDataJSON / signature / authenticatorData.
     const verification = await verifyAuthenticationResponse({
       response: {
         id: body.id,
         rawId: body.rawId,
         type: body.type,
         response: {
-          authenticatorData: toBuffer(body.response.authenticatorData), 
-          clientDataJSON: toBuffer(body.response.clientDataJSON), 
-          signature: toBuffer(body.response.signature), 
-          userHandle: body.response.userHandle
-            ? toBuffer(body.response.userHandle)
-            : null,
+          authenticatorData: body.response.authenticatorData,
+          clientDataJSON: body.response.clientDataJSON,
+          signature: body.response.signature,
+          userHandle: body.response.userHandle || null,
         },
       },
       expectedChallenge,

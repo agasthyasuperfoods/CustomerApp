@@ -215,9 +215,22 @@ verification = await verifyRegistrationResponse({
       // @simplewebauthn/server's return shape
       const cred = registrationInfo.credential || {};
       if (!Array.isArray(user.passkeys)) user.passkeys = [];
+      // Ensure publicKey stored as a base64url string (stable for JSON)
+      let pubKey = cred.publicKey;
+      try {
+        if (Buffer.isBuffer(pubKey) || pubKey instanceof Uint8Array) {
+          pubKey = Buffer.from(pubKey).toString('base64')
+            .replace(/\+/g, '-')
+            .replace(/\//g, '_')
+            .replace(/=+$/, '');
+        }
+      } catch (e) {
+        // leave as-is if conversion fails
+      }
+
       user.passkeys.push({
         credentialID: cred.id,
-        publicKey: cred.publicKey,
+        publicKey: pubKey,
         counter: cred.counter,
       });
     await users.set(phone, user);
