@@ -186,12 +186,13 @@ export default async function handler(req, res) {
       // Send the original base64url strings to the verifier (id/rawId as
       // strings, and attestation/clientData as base64url strings). This
       // matches the shape expected by @simplewebauthn/server.
-     verification = await verifyRegistrationResponse({
+verification = await verifyRegistrationResponse({
   response: req.body,
   expectedChallenge,
-  expectedOrigin: "http://localhost:3000",
-  expectedRPID: "localhost",
+  expectedOrigin: process.env.NEXT_PUBLIC_ORIGIN, 
+  expectedRPID: process.env.NEXT_PUBLIC_DOMAIN, 
 });
+
 
     } catch (verifyErr) {
       console.error("❌ verifyRegistrationResponse threw:", verifyErr && (verifyErr.stack || verifyErr));
