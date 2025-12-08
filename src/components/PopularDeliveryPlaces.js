@@ -30,7 +30,7 @@ export default function PopularDeliveryPlaces() {
 
   return (
     <section
-      className="mt-5 mb-5 mx-2 rounded-2xl bg-white shadow-lg p-4 flex flex-col gap-3"
+      className="mt-5 mb-5 rounded-2xl bg-white shadow-lg p-4 flex flex-col gap-3"
       style={{ boxShadow: "0 4px 12px rgba(55,70,101,.08)" }}
     >
       <div className="flex items-center justify-between px-1">

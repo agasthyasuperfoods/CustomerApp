@@ -8,7 +8,7 @@ export default function MilkBanner() {
   const router = useRouter();
 
   return (
-    <div className="w-full px-4 py-4 overflow-x-hidden">
+    <div className="w-full py-4 overflow-x-hidden">
       <div
         className="relative w-full rounded-2xl p-5 overflow-hidden shadow-md"
         style={{ backgroundColor: "#F9D66A" }}

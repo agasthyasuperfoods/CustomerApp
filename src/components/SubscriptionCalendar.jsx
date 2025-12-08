@@ -2,49 +2,38 @@
 
 import React, { useEffect, useRef, useMemo } from "react";
 
-/* ✅ BRAND ACCENT */
+/* ✅ BRAND COLORS */
 const ACCENT = "#FBBF24";
 
-/* ✅ GENERATE SCROLLABLE MONTHS */
-function generateScrollableMonths() {
+const STATUS_COLORS = {
+  Delivered: "#4CAF50",
+  Upcoming: "#4F7DF3",
+  Vacation: "#8B5CF6",
+  "On Hold": "#EF4444",
+};
+
+/* ✅ GENERATE CURRENT WEEK CENTERED ON TODAY */
+function generateWeek() {
   const today = new Date();
-  const months = [];
+  const week = [];
 
-  for (let m = -3; m <= 3; m++) {
-    const date = new Date(today.getFullYear(), today.getMonth() + m, 1);
-    const year = date.getFullYear();
-    const month = date.getMonth();
+  for (let i = -3; i <= 3; i++) {
+    const d = new Date(today);
+    d.setDate(today.getDate() + i);
 
-    const end = new Date(year, month + 1, 0);
-    const dates = [];
-
-    for (let d = 1; d <= end.getDate(); d++) {
-      const dateObj = new Date(year, month, d);
-      dates.push({
-        day: dateObj.toLocaleDateString("en-US", { weekday: "short" }),
-        date: d,
-        isToday:
-          d === today.getDate() &&
-          month === today.getMonth() &&
-          year === today.getFullYear(),
-      });
-    }
-
-    months.push({
-      monthLabel: date.toLocaleDateString("en-US", {
-        month: "short",
-        year: "numeric",
-      }),
-      dates,
+    week.push({
+      day: d.toLocaleDateString("en-US", { weekday: "short" }),
+      date: d.getDate(),
+      isToday: i === 0,
     });
   }
 
-  return months;
+  return week;
 }
 
 export default function SubscriptionCalendar() {
   const scrollRef = useRef(null);
-  const months = useMemo(() => generateScrollableMonths(), []);
+  const dates = useMemo(() => generateWeek(), []);
 
   /* ✅ AUTO CENTER TODAY */
   useEffect(() => {
@@ -56,97 +45,81 @@ export default function SubscriptionCalendar() {
         parent.offsetWidth / 2 +
         todayEl.offsetWidth / 2;
 
-      parent.scrollTo({
-        left: scrollLeft,
-        behavior: "smooth",
-      });
+      parent.scrollTo({ left: scrollLeft, behavior: "smooth" });
     }
   }, []);
 
   return (
-    <div className="w-full bg-[#f6f7fa] py-3">
+    <div className="w-full px-3 mt-3">
 
-      {/* ✅ TOP STATUS */}
-      <div className="text-center text-sm font-semibold text-gray-600 mb-3">
-        No Active Subscription
-      </div>
+      {/* ✅ MAIN CARD */}
+      <div className="bg-white rounded-2xl px-4 py-4">
 
-      {/* ✅ SCROLLER */}
-      <div
-        ref={scrollRef}
-        className="flex items-end gap-3 overflow-x-auto scroll-smooth px-4 no-scrollbar"
-      >
-        {months.map((month, mIndex) => (
-          <div key={mIndex} className="flex items-end gap-3">
+        {/* ✅ TITLE */}
+        <h2 className="text-center font-semibold text-gray-700 mb-4">
+          No Active Subscription
+        </h2>
 
-            {/* ✅ FIXED VERTICAL MONTH LABEL WITH BG */}
-     {/* ✅ VERTICAL MONTH LABEL (FIXED HEIGHT) */}
-<div className="flex items-center justify-center h-[52px] w-[20px]">
-  <span
-    className="text-[9px] font-semibold text-gray-600 whitespace-nowrap"
-    style={{ transform: "rotate(-90deg)" }}
-  >
-    {month.monthLabel}
-  </span>
-</div>
+        {/* ✅ CALENDAR SCROLLER */}
+        <div
+          ref={scrollRef}
+          className="flex justify-between overflow-x-auto no-scrollbar px-2"
+        >
+          {dates.map((item, i) => (
+            <div key={i} className="flex flex-col items-center min-w-[55px]">
 
+              {/* ✅ DAY */}
+              <span className="text-xs mb-2 font-medium text-gray-400">
+                {item.day}
+              </span>
 
-            {/* ✅ DATES */}
-            {month.dates.map((item, i) => (
-              <div key={i} className="flex flex-col items-center min-w-[46px]">
-
-                <span className="text-[11px] mb-1 font-medium text-gray-400">
-                  {item.day}
-                </span>
-
-                {/* ✅ TODAY = RECTANGLE, OTHERS = WHITE */}
-                <div
-                  className={`w-10 h-9 flex items-center justify-center font-semibold text-sm ${
-                    item.isToday ? "today" : ""
-                  }`}
-                  style={{
-                    backgroundColor: item.isToday ? ACCENT : "#ffffff",
-                    color: item.isToday ? "#000" : "#6b7280",
-    borderRadius: "9999px", // ✅ FORCED PERFECT CIRCLE
-                  }}
-                >
-                  {item.date}
-                </div>
-
+              {/* ✅ DATE */}
+              <div
+                className={`w-11 h-11 flex items-center justify-center font-semibold text-sm ${
+                  item.isToday ? "today rounded-full" : "rounded-full"
+                }`}
+                style={{
+                  backgroundColor: item.isToday ? ACCENT : "#ffffff",
+                  color: item.isToday ? "#000" : "#6B7280",
+                }}
+              >
+                {item.date}
               </div>
-            ))}
-          </div>
-        ))}
+            </div>
+          ))}
+        </div>
+
+        {/* ✅ LEGEND (2 ROWS LIKE IMAGE) */}
+        <div className="flex flex-wrap justify-center gap-x-6 gap-y-3 mt-6 text-sm text-gray-700">
+
+          <Legend color={STATUS_COLORS.Delivered} label="Delivered" />
+          <Legend color={STATUS_COLORS.Upcoming} label="Upcoming" />
+          <Legend color={STATUS_COLORS.Vacation} label="Vacation" />
+          <Legend color={STATUS_COLORS["On Hold"]} label="On Hold" />
+
+        </div>
       </div>
 
-      {/* ✅ COLOR CODES */}
-      <div className="flex flex-wrap justify-center gap-6 mt-4 text-xs text-gray-600">
-        <Legend color="bg-green-500" label="Delivered" />
-        <Legend color="bg-blue-400" label="Upcoming" />
-  <Legend color="bg-purple-500" label="Vacation" />
-        <Legend color="bg-red-500" label="On Hold" />
-      </div>
-
-      {/* ✅ HIDE SCROLLBAR */}
+      {/* ✅ SCROLLBAR HIDE */}
       <style jsx>{`
-        .no-scrollbar::-webkit-scrollbar {
-          display: none;
-        }
-        .no-scrollbar {
-          -ms-overflow-style: none;
-          scrollbar-width: none;
-        }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
       `}</style>
+
     </div>
   );
 }
 
-/* ✅ LEGEND */
+/* ✅ LEGEND PILL */
 function Legend({ color, label }) {
   return (
-    <div className="flex items-center gap-2">
-      <span className={`w-5 h-[6px] rounded-full ${color}`} />
+    <div className="flex items-center gap-1">
+      <span
+        className="w-3 h-[12px] rounded-full"
+        style={{ backgroundColor: color }}
+      />
       {label}
     </div>
   );
 }
+    
