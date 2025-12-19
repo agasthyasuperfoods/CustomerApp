@@ -7,7 +7,7 @@ export default function Document() {
         {/* PWA Support */}
         <link rel="manifest" href="/manifest.json" />
         <meta name="theme-color" content="#FFD600" />
-        <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
+        <link rel="apple-touch-icon" href="/Logo.png" />
       </Head>
 
       <body>
